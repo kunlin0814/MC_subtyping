@@ -92,7 +92,7 @@ PCA_plot(data = data2 , group = phenotype_AB$SOURCE , title = "TCGA+CMT after co
 PCA_plot(data = data2 , group = phenotype_AB$SUBTYPE , title = "TCGA+CMT after combat"  )
 
 PCA_plot(data = data2 , group = phenotype_AB$SOURCE , 
-          label = phenotype_AB$SUBTYPE , title = "TCGA+CMT after combat"  )
+         label = phenotype_AB$SUBTYPE , title = "TCGA+CMT after combat"  )
 
 
 tcga_corrected <- data.frame(combat_batch_corrected[,colnames(combat_batch_corrected)%in%A_pheno$PATIENT_ID ])

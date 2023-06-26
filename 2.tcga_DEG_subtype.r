@@ -1,5 +1,3 @@
-
-
 library(edgeR)
 library(limma)
 library(tmaptools)
@@ -7,10 +5,20 @@ library(tidyverse)
 library(reshape2)
 library(biomaRt)
 
-
+source(
+  'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
+#'/Volumes/Research/GitHub/R_util/my_util.R')
+#'
+#'
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+setwd(base)
 tcga_data <- read.csv("tcga_combat_corrected.csv",header = T, row.names = 1)
 pheno_tcga <- read.csv("phenotype_tcga.csv",header = T, row.names = 1)
 
+meta <- fread('All_TCGA_subtype.txt')
+tcga_sample <- colnames(tcga_data)
+miss_file <- setdiff(meta$Sample_name, tcga_sample) 
+miss_file <- meta[Sample_name %in% miss_file]
 
 tcga_data <- data.frame(t(tcga_data))
 
