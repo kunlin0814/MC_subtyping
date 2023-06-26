@@ -14,9 +14,9 @@ all_meta <- all_data[1,]
 all_meta <- all_meta[,-1]
 sample_list <- c(colnames(all_meta))
 all_meta <- data.frame(t(all_meta))
-colnames(all_meta) <- "Subtype"
+colnames(all_meta) <- "SUBTYPE"
 
-all_meta$Sample_name <- sample_list
+all_meta$PATIENT_ID <- sample_list
 setDT(all_meta)
 
 fwrite(all_meta, file ="All_TCGA_subtype.txt", sep ="\t", col.names = T, row.names = F, eol = "\n")
