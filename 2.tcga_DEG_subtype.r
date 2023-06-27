@@ -165,5 +165,6 @@ dev.off()
 
 write.csv(voom_tt0.05,paste(comparison_header,"DEG_train_tgca_subtype.csv",sep = "_"))
 
-save.image(paste(results_base,"tcga_DEG_subtype.rdata",sep="/"))
+# save.image(paste(results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep="")
+#                  ,sep="/"))
 
