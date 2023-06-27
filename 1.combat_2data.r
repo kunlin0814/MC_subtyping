@@ -7,7 +7,7 @@ library(sva)
 library(pvca)
 ## 06/26/23
 ## we can just use human TCGA data and ignore dogs
-#load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/1.combat_2data.rdata")
+load("G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set/orig_results/1.combat_2data.rdata")
 #load("G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set/all_tcga_combat_2data.rdata")
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
