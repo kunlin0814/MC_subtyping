@@ -8,6 +8,7 @@ library(pvca)
 ## 06/26/23
 ## we can just use human TCGA data and ignore dogs
 #load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/1.combat_2data.rdata")
+#load("G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set/all_tcga_combat_2data.rdata")
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
@@ -15,7 +16,8 @@ source(
 #'/Volumes/Research/GitHub/R_util/my_util.R')
 #'
 #'
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+base <- "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+  #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 
 A.rna  <- fread("TCGA_BRCA_log2TPM+1.csv", header = T)
@@ -30,14 +32,14 @@ dim(B.rna) # 13220   144
 overlap_gene_list <- intersect(B.rna$GeneName,A.rna$GeneName)
 B.rna <- B.rna[GeneName %in% overlap_gene_list, ]
 A.rna <- A.rna[GeneName %in% overlap_gene_list, ]
-setDF(B.rna)
-setDF(A.rna)
+B.rna <- data.frame(B.rna)
+A.rna <- data.frame(A.rna)
 #B.rna <- na.omit(B.rna)
 row.names(B.rna) <- B.rna$GeneName
 row.names(A.rna) <- A.rna$GeneName
 A.rna <- A.rna[,-1]
 B.rna <- B.rna[,-1]
-abc = row.names(A.rna)== row.names(B.rna) #TRUE
+#abc = row.names(A.rna)== row.names(B.rna) #TRUE
 AB.rna <- cbind(A.rna,B.rna)
 
 phenotype_AB <- read.csv(file="All_dog_TCGA_subtype_meta.txt",header=T,sep="\t")
@@ -45,7 +47,6 @@ AB.rna <- AB.rna[, colnames(AB.rna)%in% phenotype_AB$PATIENT_ID]
 #CMT has only simple cancer = 78 sam
 B_pheno <-phenotype_AB[phenotype_AB$SOURCE=='cmt',] 
 B.rna <- AB.rna[, colnames(AB.rna)%in% B_pheno$PATIENT_ID]
-
 phenotype_AB <- phenotype_AB[ match(colnames(AB.rna), phenotype_AB$PATIENT_ID ),]
 
 #phenotype_AB<- phenotype_AB[,-1]
@@ -92,18 +93,17 @@ dev.off()
 
 # Here we build a model matrix with  covariates = phenotype_AB$CLASS
 
-modcombat = model.matrix(~1+ phenotype_AB$SUBTYPE, data = phenotype_AB)
-
+modcombat = model.matrix(~1+ factor(SUBTYPE), data = phenotype_AB)
 
 #### Correct SAMPLE
-combat_batch_corrected = ComBat(dat = as.matrix(data[, -1]), batch = phenotype_AB$SOURCE,
-                                mod = modcombat, par.prior = TRUE, prior.plots = TRUE)
+combat_batch_corrected = ComBat(dat = data[, -1], batch = phenotype_AB$SOURCE,
+                                #mod = modcombat, 
+                                par.prior = TRUE, prior.plots = TRUE)
 
 rownames(combat_batch_corrected) <- data$gene_id
 head(combat_batch_corrected)
 pdf(file="CBFpvcaFunction_combat_batch_corrected.pdf", width = 6,height = 4)
-p <- CBFpvcaFunction(t(combat_batch_corrected), phenotypedata = phenotype_AB[,c("SOURCE","SUBTYPE")])
-print(p)
+CBFpvcaFunction(t(combat_batch_corrected), phenotypedata = phenotype_AB[,c("SOURCE","SUBTYPE")])
 dev.off()
 
 
