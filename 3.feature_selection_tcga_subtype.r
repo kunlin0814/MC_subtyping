@@ -64,7 +64,7 @@ for (i in 1:50) {
   boruta_fixed <- TentativeRoughFix(boruta_genes)
   boruta_final <- getSelectedAttributes(boruta_fixed, withTentative = FALSE)
   print(paste("boruta_round:", i))
-  print(boruta_final)
+  #print(boruta_final)
   boruta_results[[i]] <- boruta_final
   
   # VarselRF
