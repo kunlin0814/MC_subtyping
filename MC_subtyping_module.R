@@ -5,7 +5,7 @@ PCA_plot <- function(data,group,label= "", title = "") {
   
   if (label == "") {
     p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=4)+ 
+      geom_point(aes(col=group),size=2)+ 
       xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
       ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
       theme_bw(base_size = 16) + ggtitle(title)+
@@ -13,7 +13,7 @@ PCA_plot <- function(data,group,label= "", title = "") {
     
   } else {
     p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=4)+ geom_text(aes(label=label))+
+      geom_point(aes(col=group),size=2)+ geom_text(aes(label=label))+
       xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
       ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
       theme_bw(base_size = 16)+ ggtitle(title)+
@@ -31,7 +31,7 @@ PCA_plot2 <- function(data,group,label= "", title = "") {
   
   if (label == "") {
     p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=4)+ 
+      geom_point(aes(col=group),size=2)+ 
       xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
       ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
       theme_bw(base_size = 16) + ggtitle(title)+
@@ -39,7 +39,7 @@ PCA_plot2 <- function(data,group,label= "", title = "") {
     
   } else {
     p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=4)+ geom_text(aes(label=label))+
+      geom_point(aes(col=group),size=2)+ geom_text(aes(label=label))+
       xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
       ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
       theme_bw(base_size = 16)+ ggtitle(title)+

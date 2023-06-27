@@ -5,19 +5,41 @@ library(tidyverse)
 library(reshape2)
 library(biomaRt)
 library(caret)
+
+#load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/2.tcga_DEG_subtype.rdata")
+
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 #'/Volumes/Research/GitHub/R_util/my_util.R')
 #'
-#'
-base <- "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+# package_location <- as.character(args[1])
+# new_data_file <- as.character(args[2])
+# out_file_name <- as.character(args[3])
+
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
+# "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
+comparison <- c("Basal","LumA")
+comparison_header  <- paste(comparison, collapse = 'vs')
 
-tcga_data <- read.csv("all_tcga_combat_corrected.csv",header = T, row.names = 1)
-pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T, row.names = 1)
+results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
+dir.create(results_base)
+tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
+setDF(tcga_data)
+row.names(tcga_data) <- tcga_data$V1
+tcga_data <- tcga_data[,-1]
+
+pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
+row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
+pheno_tcga$X <- NULL
+pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
+tcga_data <- tcga_data[,colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
+
+length(colnames(tcga_data))==length(pheno_tcga$PATIENT_ID)
 
 tcga_data <- data.frame(t(tcga_data))
 
@@ -29,7 +51,7 @@ class(tcga_data$A1BG) # "numeric"
 aaa = pheno_tcga$PATIENT_ID == row.names(tcga_data)#TRUE 
 
 
-tcga_data_dge <- DGEList(t(tcga_data))
+#tcga_data_dge <- DGEList(t(tcga_data))
 #Error: Negative counts not allowed
 
 
@@ -76,7 +98,7 @@ head(tcga_data_dge[["samples"]])
 
 #We can make a vector of factors from our phenotype table that contains sample group information
 samp_groups <- pheno_train_data
-samp_groups
+#samp_groups
 
 #Lets now reassign the group values in the samples data.frame and check the result.
 tcga_data_dge[["samples"]]$group <- samp_groups
@@ -91,15 +113,25 @@ tcga_data_dge[["samples"]]
 #design <- model.matrix(~group, data = tcga_data_dge[["samples"]])
 
 design <- model.matrix(~ 0 + group, data = tcga_data_dge[["samples"]])
-colnames(design) <- c("basal", "nonbasal")
-View(design)
-
+colnames(design) <- comparison
+#View(design)
+pdf(file=paste(results_base,
+               paste(comparison_header,"voom_mean_variance_plot.pdf",sep="")
+               ,sep="/")
+               ,height = 4.5,width = 6)
 voom_data <- voom(tcga_data_dge, design, plot = TRUE)
-
+dev.off()
 voom_fit <- lmFit(object = voom_data, design = design)
 
-cont.matrix <- makeContrasts(basalvsnonbasal = basal - nonbasal, levels = design)
-cont.matrix
+## use the following 
+
+comparison_command <- paste(comparison, collapse = '-')
+prestr <- "makeContrasts("
+poststr <- ",levels=design)"
+commandstr=paste(prestr,comparison_header,"=",comparison_command,poststr,sep="")
+# commandstr
+cont.matrix <- eval(parse(text=commandstr))
+#cont.matrix <- makeContrasts(LumAvsLumB = LumA - LumB, levels = design)
 
 voom_fit <- contrasts.fit(fit = voom_fit, contrasts = cont.matrix)
 
@@ -107,21 +139,31 @@ voom_fit <- eBayes(voom_fit)
 
 #We can run a quick diagnostic plot to again plot our mean variances after fitting our linear model and estimating.
 #The blue line here represents our residual standard deviation estimated by eBayes.
+pdf(file=paste(results_base,
+               paste(comparison_header,"voom_fit_plot.pdf",sep=""),
+               sep="/")
+    ,height = 4.5,width = 6)
 plotSA(voom_fit)
+dev.off()
 
 voom_tt <- topTable(voom_fit, p.value = 1, number = Inf)
-
 voom_tt0.05 <- voom_tt[voom_tt$adj.P.Val <=0.05,]
+paste("Gene=",nrow(voom_tt0.05))
 #7624 genes 
 
 pca_data <- tcga_data_filtered_train[rownames(tcga_data_filtered_train)%in% rownames(voom_tt0.05),]
 dim(pca_data)
 
-PCA_plot(t(pca_data), pheno_train_data, title = "DEGs of train tcga data(n=7,624)")
-
+pdf(file=paste(results_base,
+               paste(comparison_header,"PCA_plot.pdf",sep=""),
+               sep="/")
+    ,height = 4.5,width = 6)
+p <- PCA_plot(t(pca_data), pheno_train_data, title = paste("DEGs of train tcga data ", paste("n=",nrow(voom_tt0.05))))
+print(p)
+dev.off()
 #tcga_data_df <-  data.frame(tcga_data_dge[["counts"]])
 
-write.csv(voom_tt0.05,"DEG_train_tgca_subtype.csv")
+write.csv(voom_tt0.05,paste(comparison_header,"DEG_train_tgca_subtype.csv",sep = "_"))
 
-save.image("tcga_DEG_subtype.rdata")
+#save.image("tcga_DEG_subtype.rdata")
 

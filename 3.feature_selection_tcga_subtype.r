@@ -1,5 +1,3 @@
-
-
 # feature_selection_tcga_tcga
 library(Boruta)
 library(vars)
@@ -9,8 +7,34 @@ library(xgboost)
 library(caret)
 library(e1071)
 library(ranger)
+#load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/3.feature_selection_tcga_subtype.rdata")
 
+source(
+  'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
+source(
+  'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+
+comparison <- c("Basal","LumA")
 # We will use both train and test data 
+voom_tt0.05 <- read.csv('BasalvsLumA_DEG_train_tgca_subtype.csv',header = T, row.names = 1)
+comparison_header  <- paste(comparison, collapse = 'vs')
+results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
+dir.create(results_base,recursive = TRUE)
+
+
+tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
+setDF(tcga_data)
+row.names(tcga_data) <- tcga_data$V1
+tcga_data <- tcga_data[,-1]
+
+pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
+row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
+pheno_tcga$X <- NULL
+pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
+tcga_data <- tcga_data[,colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
+
 data <- data.frame(t(tcga_data[rownames(tcga_data)%in% rownames(voom_tt0.05),]))
 dim(data)
 
@@ -52,6 +76,7 @@ for (i in 1:50) {
 }
 
 # Create frequency tables for Boruta and VarselRF results
+gene_list <- unlist(boruta_results)
 boruta_freq <- table(unlist(boruta_results))
 #varsel_freq <- table(unlist(varsel_results))
 
@@ -91,12 +116,31 @@ pca_data_freq25 <- tcga_data_t[,colnames(tcga_data_t)%in% boruta_features25]
 pca_data_freq40 <- tcga_data_t[,colnames(tcga_data_t)%in% boruta_features40]
 pca_data_freq50 <- tcga_data_t[,colnames(tcga_data_t)%in% boruta_features50]
 
+pdf(file=paste(results_base,
+               paste(comparison_header,"Selected genes-tcga_subtype_Freq_25.pdf",sep=""),
+               sep="/")
+    ,height = 4.5,width = 6)
+p <- PCA_plot(pca_data_freq25,pheno_tcga$SUBTYPE, 
+              title =paste("Selected genes-tcga_subtype Freq=25"," n=",length(boruta_features25),sep=""))
+print(p)
+dev.off()
+pdf(file=paste(results_base,
+               paste(comparison_header,"Selected genes-tcga_subtype_Freq_40.pdf",sep=""),
+               sep="/")
+    ,height = 4.5,width = 6)
+p <- PCA_plot(pca_data_freq40,pheno_tcga$SUBTYPE, 
+              title =paste("Selected genes-tcga_subtype Freq=40"," n=",length(boruta_features40),sep=""))
+print(p)
+dev.off()
+pdf(file=paste(results_base,
+               paste(comparison_header,"Selected genes-tcga_subtype_Freq_50.pdf",sep=""),
+               sep="/")
+    ,height = 4.5,width = 6)
+p <- PCA_plot(pca_data_freq50,pheno_tcga$SUBTYPE, 
+              title =paste("Selected genes-tcga_subtype Freq=50,","n=",length(boruta_features50),sep=""))
+print(p)
+dev.off()
 
-PCA_plot(pca_data_freq25,pheno_tcga$SUBTYPE, title ="Selected genes-tcga_subtype(Freq=25,n=240)")
-PCA_plot(pca_data_freq40,pheno_tcga$SUBTYPE, title ="Selected genes-tcga_subtype(Freq=40,n=206)")
-PCA_plot(pca_data_freq50,pheno_tcga$SUBTYPE, title ="Selected genes-tcga_subtype(Freq=50,n=137)")
+save.image(paste(results_base,"feature_selection_tcga_subtype.rdata",sep ="/"))
 
-
-save.image("feature_selection_tcga_subtype.rdata")
-
-Saveplots(getwd())
+#Saveplots(getwd())
