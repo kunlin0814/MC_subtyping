@@ -23,7 +23,7 @@ base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
-comparison <- c("Basal","LumB")
+comparison <- c("Basal","Her2")
 comparison_header  <- paste(comparison, collapse = 'vs')
 
 results_base <- paste(base,'Step2DEG',comparison_header,sep="/")

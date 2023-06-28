@@ -17,7 +17,7 @@ source(
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 
-comparison <- c("Basal","LumB")
+comparison <- c("Basal","Her2")
 # We will use both train and test data 
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
