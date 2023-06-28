@@ -13,8 +13,8 @@ source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal","LumA")
 # We will use both train and test data 
@@ -143,4 +143,17 @@ dev.off()
 
 save.image(paste(results_base,"feature_selection_tcga_subtype.rdata",sep ="/"))
 
+gene_list_freq25 <-data.table(gene=colnames(pca_data_freq25))
+gene_list_freq40 <-data.table(gene=colnames(pca_data_freq40))
+gene_list_freq50 <-data.table(gene=colnames(pca_data_freq50))
+fwrite(gene_list_freq25, file =paste(results_base,
+                        paste(comparison_header,"gene_list_freq25.txt",sep="_"), sep="/")
+       ,eol = "\n", row.names = F, col.names = T)
+
+fwrite(gene_list_freq40, file =paste(results_base,
+                                     paste(comparison_header,"gene_list_freq40.txt",sep="_"), sep="/")
+       ,eol = "\n", row.names = F, col.names = T)
+fwrite(gene_list_freq50, file =paste(results_base,
+                                     paste(comparison_header,"gene_list_freq50.txt",sep="_"), sep="/")
+       ,eol = "\n", row.names = F, col.names = T)
 #Saveplots(getwd())
