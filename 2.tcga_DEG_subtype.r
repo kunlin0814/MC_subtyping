@@ -18,12 +18,12 @@ source(
 # new_data_file <- as.character(args[2])
 # out_file_name <- as.character(args[3])
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
-comparison <- c("Basal","LumA")
+comparison <- c("Basal","LumB")
 comparison_header  <- paste(comparison, collapse = 'vs')
 
 results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
@@ -141,14 +141,13 @@ voom_fit <- eBayes(voom_fit)
 #The blue line here represents our residual standard deviation estimated by eBayes.
 pdf(file=paste(results_base,
                paste(comparison_header,"voom_fit_plot.pdf",sep=""),
-               sep="/")
-    ,height = 4.5,width = 6)
+               sep="/") ,height = 4.5,width = 6)
 plotSA(voom_fit)
 dev.off()
 
 voom_tt <- topTable(voom_fit, p.value = 1, number = Inf)
 voom_tt0.05 <- voom_tt[voom_tt$adj.P.Val <=0.05,]
-paste("Gene=",nrow(voom_tt0.05))
+
 #7624 genes 
 
 pca_data <- tcga_data_filtered_train[rownames(tcga_data_filtered_train)%in% rownames(voom_tt0.05),]
@@ -158,13 +157,15 @@ pdf(file=paste(results_base,
                paste(comparison_header,"PCA_plot.pdf",sep=""),
                sep="/")
     ,height = 4.5,width = 6)
-p <- PCA_plot(t(pca_data), pheno_train_data, title = paste("DEGs of train tcga data ", paste("n=",nrow(voom_tt0.05))))
+p <- PCA_plot(t(pca_data), pheno_train_data, 
+              title = paste("DEGs of train tcga data ", paste("n=",nrow(voom_tt0.05))))
 print(p)
 dev.off()
 #tcga_data_df <-  data.frame(tcga_data_dge[["counts"]])
 
-write.csv(voom_tt0.05,paste(comparison_header,"DEG_train_tgca_subtype.csv",sep = "_"))
+write.csv(voom_tt0.05,paste(results_base,paste(comparison_header,"DEG_train_tgca_subtype.csv",sep = "_")
+                            ,sep="/"))
 
-# save.image(paste(results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep="")
-#                  ,sep="/"))
+save.image(paste(results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep="")
+                 ,sep="/"))
 

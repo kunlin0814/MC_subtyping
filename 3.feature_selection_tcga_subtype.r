@@ -14,26 +14,30 @@ source(
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-comparison <- c("Basal","LumA")
-# We will use both train and test data 
-voom_tt0.05 <- read.csv('BasalvsLumA_DEG_train_tgca_subtype.csv',header = T, row.names = 1)
+comparison <- c("Basal","LumB")
 comparison_header  <- paste(comparison, collapse = 'vs')
+prev_results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
+load(paste(prev_results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep=""),sep='/'))
+
+# We will use both train and test data 
+
+# comparison_header  <- paste(comparison, collapse = 'vs')
 results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
 dir.create(results_base,recursive = TRUE)
 
 
-tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
-setDF(tcga_data)
-row.names(tcga_data) <- tcga_data$V1
-tcga_data <- tcga_data[,-1]
-
-pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
-row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
-pheno_tcga$X <- NULL
-pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
-tcga_data <- tcga_data[,colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
+# tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
+# setDF(tcga_data)
+# row.names(tcga_data) <- tcga_data$V1
+# tcga_data <- tcga_data[,-1]
+# 
+# pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
+# row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
+# pheno_tcga$X <- NULL
+# pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
+# tcga_data <- tcga_data[,colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
 
 data <- data.frame(t(tcga_data[rownames(tcga_data)%in% rownames(voom_tt0.05),]))
 dim(data)

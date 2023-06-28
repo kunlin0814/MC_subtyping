@@ -1,4 +1,3 @@
-
 library(randomForest)
 library(xgboost)
 library(DMwR)
@@ -12,7 +11,8 @@ library(e1071)
 library(ranger)
 library(sva)
 library(smotefamily)
-
+prev_results_base <- paste(base,'Step4_model_create',comparison_header,sep="/")
+load(paste(prev_results_base,'model_tcga_subtype.rdata',sep="/"))
 Res_CMT <- function(prob,pred,test_data,model) {
   #AUC 
   prob = predict(model, test_data, type = "prob")
@@ -22,7 +22,7 @@ Res_CMT <- function(prob,pred,test_data,model) {
   ROC_AUC <- roc_c[1]
   
   PR_AUC <- prauc(truth = as.factor(test_data$SUBTYPE) , prob=prob[, 2]
-                  ,positive= "nonbasal")
+                  ,positive= comparison[2])
   
   #confusion matrix
   actual = as.factor(test_data$SUBTYPE)
