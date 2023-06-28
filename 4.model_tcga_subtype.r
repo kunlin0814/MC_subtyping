@@ -17,13 +17,20 @@ source(
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 
-comparison <- c("Basal","Her2")
-# We will use both train and test data 
+comparison <- c("LumA","LumB")
+
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+
+each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
+minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
+
+
+# We will use both train and test data
+
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
 load(paste(prev_results_base,'feature_selection_tcga_subtype.rdata',sep="/"))
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 
 train_control <- trainControl(method = "cv" , number = 5,
@@ -167,7 +174,7 @@ Res_CMT <- function(prob,pred,test_data,model) {
   ROC_AUC <- roc_c[1]
   
   PR_AUC <- prauc(truth = as.factor(test_data$SUBTYPE) , prob=prob[, 2]
-                  ,positive= comparison[2])
+                  ,positive= minor_group) ## positive, we can choose minority group as the positive
   
   #confusion matrix
   actual = as.factor(test_data$SUBTYPE)
@@ -227,37 +234,37 @@ dim(data_model) #filter = 25 times, 240 genes
 #check if class is fortor
 class(data_model$SUBTYPE)
 
-# res_tcga_subtype_rf_freq25 <- Model_50_RF(data = data_model,1)
-# View(res_tcga_subtype_rf_freq25)
-# 
-# res_tcga_subtype_svm_freq25 <- Model_50_SVM(data = data_model,5)
-# View(res_tcga_subtype_svm_freq25)
-# 
-# 
-# #PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
-# write.csv(res_tcga_subtype_rf_freq25,paste(results_base,"res_tcga_subtype_rf_freq25.csv",sep="/"))
-# write.csv(res_tcga_subtype_svm_freq25,paste(results_base,"res_tcga_subtype_svm_freq25.csv",sep="/"))
-# 
-# ########## 
-# 
-# #Freq freq40 times 
-# data_model<- data.frame(SUBTYPE= factor(pheno_tcga$SUBTYPE), pca_data_freq40)
-# 
-# dim(data_model) #freq = 40 times, 506 genes
-# #664 207
-# 
-# #check if class is fortor
-# class(data_model$SUBTYPE)
-# 
-# res_tcga_subtype_rf_freq40 <- Model_50_RF(data = data_model,5)
-# View(res_tcga_subtype_rf_freq40)
-# 
-# res_tcga_subtype_svm_freq40 <- Model_50_SVM(data = data_model,5)
-# View(res_tcga_subtype_svm_freq40)
-# 
-# #PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
-# write.csv(res_tcga_subtype_rf_freq40,"res_tcga_subtype_rf_freq40.csv")
-# write.csv(res_tcga_subtype_svm_freq40,"res_tcga_subtype_svm_freq40.csv")
+res_tcga_subtype_rf_freq25 <- Model_50_RF(data = data_model,1)
+#View(res_tcga_subtype_rf_freq25)
+
+res_tcga_subtype_svm_freq25 <- Model_50_SVM(data = data_model,5)
+#View(res_tcga_subtype_svm_freq25)
+
+
+#PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
+write.csv(res_tcga_subtype_rf_freq25,paste(results_base,"res_tcga_subtype_rf_freq25.csv",sep="/"))
+write.csv(res_tcga_subtype_svm_freq25,paste(results_base,"res_tcga_subtype_svm_freq25.csv",sep="/"))
+
+##########
+
+#Freq freq40 times
+data_model<- data.frame(SUBTYPE= factor(pheno_tcga$SUBTYPE), pca_data_freq40)
+
+dim(data_model) #freq = 40 times, 506 genes
+#664 207
+
+#check if class is fortor
+class(data_model$SUBTYPE)
+
+res_tcga_subtype_rf_freq40 <- Model_50_RF(data = data_model,5)
+#View(res_tcga_subtype_rf_freq40)
+
+res_tcga_subtype_svm_freq40 <- Model_50_SVM(data = data_model,5)
+#View(res_tcga_subtype_svm_freq40)
+
+#PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
+write.csv(res_tcga_subtype_rf_freq40,paste(results_base,"res_tcga_subtype_rf_freq40.csv",sep="/"))
+write.csv(res_tcga_subtype_svm_freq40,paste(results_base,"res_tcga_subtype_svm_freq40.csv",sep="/"))
 
 ###### 
 #Freq freq50 times 
@@ -270,23 +277,23 @@ dim(data_model) #freq = 15 times, 7 genes
 class(data_model$SUBTYPE)
 
 res_tcga_subtype_rf_freq50 <- Model_50_RF(data = data_model,5)
-View(res_tcga_subtype_rf_freq50)
+#View(res_tcga_subtype_rf_freq50)
 
 res_tcga_subtype_svm_freq50 <- Model_50_SVM(data = data_model,5)
-View(res_tcga_subtype_svm_freq50)
+#View(res_tcga_subtype_svm_freq50)
 
 #PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
 write.csv(res_tcga_subtype_rf_freq50,paste(results_base,"res_tcga_subtype_rf_freq50.csv",sep="/"))
 write.csv(res_tcga_subtype_svm_freq50,paste(results_base,"res_tcga_subtype_svm_freq50.csv",sep="/"))
 
-sum_model_ALL <- data.frame(metrics = rownames(res_tcga_subtype_rf_freq25),
-                        #rf_freq25= res_tcga_subtype_rf_freq25$mean,
-                        #svm_freq25= res_tcga_subtype_svm_freq25$mean,
-                        #rf_freq40= res_tcga_subtype_rf_freq40$mean,
-                        #svm_freq40= res_tcga_subtype_svm_freq40$mean,
+sum_model_ALL <- data.frame(metrics = rownames(res_tcga_subtype_rf_freq50),
+                        rf_freq25= res_tcga_subtype_rf_freq25$mean,
+                        svm_freq25= res_tcga_subtype_svm_freq25$mean,
+                        rf_freq40= res_tcga_subtype_rf_freq40$mean,
+                        svm_freq40= res_tcga_subtype_svm_freq40$mean,
                         rf_freq50= res_tcga_subtype_rf_freq50$mean,
                         svm_freq50= res_tcga_subtype_svm_freq50$mean)
-View(sum_model_ALL)
+#View(sum_model_ALL)
 
 write.csv(sum_model_ALL,paste(results_base,"sum_model_tcga_subtype.csv",sep="/"))
 

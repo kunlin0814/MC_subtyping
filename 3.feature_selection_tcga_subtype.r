@@ -13,10 +13,10 @@ source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-comparison <- c("Basal","Her2")
+comparison <- c("LumA","LumB")
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
 load(paste(prev_results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep=""),sep='/'))
