@@ -17,12 +17,10 @@ source(
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 
-comparison <- c("LumA","Her2")
-
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-
+comparison <- c("Basal","LumA")
 
 # We will use both train and test data
 

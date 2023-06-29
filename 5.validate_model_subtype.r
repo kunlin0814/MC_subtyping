@@ -17,7 +17,7 @@ library(kernlab)
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-comparison <- c("LumA","Her2")
+comparison <- c("Basal","LumA")
 other_group <- comparison[!comparison %in% "Basal"]
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step4_model_create',comparison_header,sep="/")
