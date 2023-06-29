@@ -14,8 +14,8 @@ library(smotefamily)
 library(mlr3measures)
 library(kernlab)
 
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal","LumA")
 other_group <- comparison[!comparison %in% "Basal"]
@@ -25,6 +25,15 @@ load(paste(prev_results_base,'model_tcga_subtype.rdata',sep="/"))
 
 each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
 minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
+
+data_test<- read.csv(paste(base,"all_cmt_combat_corrected.csv",sep="/"),header = T, row.names = 1)
+pheno_test <- read.csv(paste(base,"phenotype_cmt.csv",sep="/"),header = T)
+pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- other_group
+pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- "Basal"
+pheno_train <- pheno_tcga
+dim(data_test)
+#  11856    78
+
 
 Res_CMT <- function(prob,pred,test_data,model) {
   #AUC 
@@ -69,13 +78,7 @@ results_base <- paste(base,'Step5_model_validation',comparison_header,sep="/")
 dir.create(results_base,recursive = TRUE)
 
 
-data_test<- read.csv(paste(base,"all_cmt_combat_corrected.csv",sep="/"),header = T, row.names = 1)
-pheno_test <- read.csv(paste(base,"phenotype_cmt.csv",sep="/"),header = T)
-pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- other_group
-pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- "Basal"
-pheno_train <- pheno_tcga
-dim(data_test)
-#  11856    78
+
 
 data_test <- data.frame(data_test)
 

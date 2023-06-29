@@ -18,8 +18,8 @@ source(
 # new_data_file <- as.character(args[2])
 # out_file_name <- as.character(args[3])
 
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
