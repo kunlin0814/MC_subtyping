@@ -18,12 +18,12 @@ source(
 # new_data_file <- as.character(args[2])
 # out_file_name <- as.character(args[3])
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
-comparison <- c("LumA","LumB")
+comparison <- c("LumA","Her2")
 comparison_header  <- paste(comparison, collapse = 'vs')
 
 results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
@@ -35,8 +35,7 @@ tcga_data <- tcga_data[,-1]
 
 pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
 row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
-pheno_tcga %>% 
-  count(SUBTYPE)
+
 
 
 pheno_tcga$X <- NULL

@@ -17,13 +17,11 @@ source(
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 
-comparison <- c("LumA","LumB")
+comparison <- c("LumA","Her2")
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
-minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
 
 
 # We will use both train and test data
@@ -31,7 +29,8 @@ minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
 load(paste(prev_results_base,'feature_selection_tcga_subtype.rdata',sep="/"))
-
+each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
+minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
 
 train_control <- trainControl(method = "cv" , number = 5,
                               classProbs = TRUE)
@@ -43,9 +42,9 @@ Model_50_RF <- function(data,nround) {
   for (i in 1:nround) {
     set.seed(i)
     print(i)
-    train_indices <- createDataPartition(data_model$SUBTYPE, p = 0.8, list = FALSE, times = 1)
-    train_data <- data_model[train_indices, ]
-    test_data <- data_model[-train_indices, ]
+    train_indices <- createDataPartition(data$SUBTYPE, p = 0.8, list = FALSE, times = 1)
+    train_data <- data[train_indices, ]
+    test_data <- data[-train_indices, ]
     
     # We use ADASYN (ADASYN is an method to oversampling the minority class)
     genData_ADAS <- ADAS(X = train_data[, -1], target = train_data$SUBTYPE, K = 5)
@@ -234,7 +233,7 @@ dim(data_model) #filter = 25 times, 240 genes
 #check if class is fortor
 class(data_model$SUBTYPE)
 
-res_tcga_subtype_rf_freq25 <- Model_50_RF(data = data_model,1)
+res_tcga_subtype_rf_freq25 <- Model_50_RF(data = data_model,5)
 #View(res_tcga_subtype_rf_freq25)
 
 res_tcga_subtype_svm_freq25 <- Model_50_SVM(data = data_model,5)

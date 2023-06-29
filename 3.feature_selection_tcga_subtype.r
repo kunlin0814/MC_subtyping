@@ -13,10 +13,11 @@ source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
-comparison <- c("LumA","LumB")
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+
+comparison <- c("LumA","Her2")
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
 load(paste(prev_results_base,paste(comparison_header,"_tcga_DEG_subtype.rdata",sep=""),sep='/'))
@@ -90,7 +91,7 @@ boruta_df <- data.frame(feature = names(boruta_freq), frequency = as.numeric(bor
 
 # SOrt 
 boruta_df <- boruta_df[order(boruta_df$frequency, decreasing = TRUE), ]
-View(boruta_df)
+# View(boruta_df)
 #varsel_df <- varsel_df[order(varsel_df$frequency, decreasing = TRUE), ]
 #View(varsel_df)
 
