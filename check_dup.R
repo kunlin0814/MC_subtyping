@@ -7,7 +7,7 @@ Res_CMT <- function(prob,pred,test_data,model) {
   ROC_AUC <- roc_c[1]
   
   PR_AUC <- prauc(truth = as.factor(test_data$SUBTYPE) , prob=prob[, 2]
-                  ,positive= minor_group)
+                  ,positive= minor_group) ## positive, we can choose minority group as the positive
   
   #confusion matrix
   actual = as.factor(test_data$SUBTYPE)

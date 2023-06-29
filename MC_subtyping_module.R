@@ -1,5 +1,27 @@
-PCA_plot <- function(data,group,label= "", title = "") {
-  Data_pca <- prcomp(scale(data,center = T,scale = T))
+library(xgboost)
+library(DMwR)
+library(grid)
+library(Boruta)
+library(vars)
+library(dplyr)
+library(varSelRF)
+library(caret)
+library(e1071)
+library(ranger)
+library(sva)
+library(smotefamily)
+library(mlr3measures)
+library(kernlab)
+library(edgeR)
+library(limma)
+library(tmaptools)
+library(tidyverse)
+library(reshape2)
+library(biomaRt)
+library(randomForest)
+
+PCA_plot <- function(data,group,scale_status=T,label= "", title = "") {
+  Data_pca <- prcomp(scale(data,center = T,scale = scale_status))
   contributions <- summary(Data_pca)$importance[2,]*100
   dataScores12 <-data.frame(Data_pca$x[, 1:2])
   
@@ -24,30 +46,6 @@ PCA_plot <- function(data,group,label= "", title = "") {
   
 }
 
-PCA_plot2 <- function(data,group,label= "", title = "") {
-  Data_pca <- prcomp(scale(data,center = T,scale = F))
-  contributions <- summary(Data_pca)$importance[2,]*100
-  dataScores12 <-data.frame(Data_pca$x[, 1:2])
-  
-  if (label == "") {
-    p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=2)+ 
-      xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
-      ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
-      theme_bw(base_size = 16) + ggtitle(title)+
-      theme(plot.title = element_text(hjust = 0.5))
-    
-  } else {
-    p <- ggplot(dataScores12,aes(x=PC1,y=PC2))+
-      geom_point(aes(col=group),size=2)+ geom_text(aes(label=label))+
-      xlab(paste("PC1","(",round(contributions[1],digits=2),"%)",sep=""))+
-      ylab(paste("PC2","(",round(contributions[2],digits=2),"%)",sep=""))+
-      theme_bw(base_size = 16)+ ggtitle(title)+
-      theme(plot.title = element_text(hjust = 0.5))
-    
-  }
-  
-}
 
 CBFpvcaFunction <- function(data,phenotypedata){
   
@@ -96,6 +94,25 @@ CBFpvcaFunction <- function(data,phenotypedata){
   return(p)
   
 }
+Balance_data <- function(data){
+  train_indices <- createDataPartition(data$SUBTYPE, p = 0.8, list = FALSE, times = 1)
+  train_data <- data[train_indices, ]
+  test_data <- data[-train_indices, ]
+  
+  # We use ADASYN (ADASYN is an method to oversampling the minority class)
+  genData_ADAS <- ADAS(X = train_data[, -1], target = train_data$SUBTYPE, K = 5)
+  train_df_adas <- genData_ADAS[["data"]]
+  class_df <- train_df_adas[ncol(train_df_adas)]
+  train_df_adas <- cbind(train_df_adas[ncol(train_df_adas)], train_df_adas[, -ncol(train_df_adas)])
+  train_data_balanced <- train_df_adas
+  names(train_data_balanced)[1] <- "SUBTYPE"
+  
+  train_data_balanced <- train_data_balanced %>%
+    mutate(across(.cols = 1, .fns = factor)) %>%
+    mutate(across(.cols = 2:length(.), .fns = as.numeric))
+  
+  return(train_data_balanced)
+}
 # data <- data_model
 # nround <- 5
 Model_50_RF <- function(data,nround) {
@@ -104,29 +121,16 @@ Model_50_RF <- function(data,nround) {
   for (i in 1:nround) {
     set.seed(i)
     print(i)
-    train_indices <- createDataPartition(data$SUBTYPE, p = 0.8, list = FALSE, times = 1)
-    train_data <- data[train_indices, ]
-    test_data <- data[-train_indices, ]
-    
-    # We use ADASYN (ADASYN is an method to oversampling the minority class)
-    genData_ADAS <- ADAS(X = train_data[, -1], target = train_data$SUBTYPE, K = 5)
-    train_df_adas <- genData_ADAS[["data"]]
-    class_df <- train_df_adas[ncol(train_df_adas)]
-    train_df_adas <- cbind(train_df_adas[ncol(train_df_adas)], train_df_adas[, -ncol(train_df_adas)])
-    train_data_balanced <- train_df_adas
-    names(train_data_balanced)[1] <- "SUBTYPE"
-    
-    train_data_balanced <- train_data_balanced %>%
-      mutate(across(.cols = 1, .fns = factor)) %>%
-      mutate(across(.cols = 2:length(.), .fns = as.numeric))
+    train_data_balanced <-Balance_data(data)
     
     train_control <- trainControl(
       method = "cv", number = 5, classProbs = TRUE)
+    
     # Random Forest
     rf_model <- caret::train(SUBTYPE ~ ., data = train_data_balanced, method = "ranger",
                              verbose = FALSE, trControl = train_control, metric = 'Accuracy',
                              tuneLength = 10)
-    
+
     # Prediction
     res_rf <- Res_CMT(prob = predict(rf_model, test_data, type = "prob"),
                       pred = predict(rf_model, test_data),
@@ -161,7 +165,6 @@ Model_50_RF <- function(data,nround) {
   return(df_res_rf)
 }
 
-
 Model_50_SVM <- function(data,nround) {
   PC0_svm <- 0 ; PC1_svm <- 0;RC0_svm <- 0;RC1_svm <- 0;F10_svm <- 0;F11_svm <- 0;MF1_svm<-0 ; PR_AUC_svm <- 0;AUC_svm <- 0;MPC_svm <-0 ; MRC_svm <-0 ; MCC_svm <-0
   
@@ -169,21 +172,7 @@ Model_50_SVM <- function(data,nround) {
   for (i in 1:nround) {
     print(i)
     set.seed(i)
-    train_indices <- createDataPartition(data$SUBTYPE, p = 0.8, list = FALSE, times = 1)
-    train_data <- data[train_indices, ]
-    test_data <- data[-train_indices, ]
-    
-    # We use ADASYN
-    genData_ADAS <- ADAS(X = train_data[, -1], target = train_data$SUBTYPE, K = 5)
-    train_df_adas <- genData_ADAS[["data"]]
-    class_df <- train_df_adas[ncol(train_df_adas)]
-    train_df_adas <- cbind(train_df_adas[ncol(train_df_adas)], train_df_adas[, -ncol(train_df_adas)])
-    train_data_balanced <- train_df_adas
-    names(train_data_balanced)[1] <- "SUBTYPE"
-    
-    train_data_balanced <- train_data_balanced %>%
-      mutate(across(.cols = 1, .fns = factor)) %>%
-      mutate(across(.cols = 2:length(.), .fns = as.numeric))
+    train_data_balanced <-Balance_data(data)
     
     # SVM
     svm_fit <- caret::train(SUBTYPE ~ ., data = train_data_balanced, method = "svmRadial",
@@ -265,42 +254,3 @@ Res_CMT <- function(prob,pred,test_data,model) {
   return(Res) #we tell the function what to output
 }
 
-
-Res_CMT <- function(prob,pred,test_data,model) {
-  #AUC 
-  prob = predict(model, test_data, type = "prob")
-  pred = predict(model, test_data)
-  #AUC 
-  roc_c <- pROC::auc(test_data$SUBTYPE, prob[,2])
-  ROC_AUC <- roc_c[1]
-  
-  PR_AUC <- prauc(truth = as.factor(test_data$SUBTYPE) , prob=prob[, 2]
-                  ,positive= minor_group)
-  
-  #confusion matrix
-  actual = as.factor(test_data$SUBTYPE)
-  predicted = as.factor(pred)
-  cm = as.matrix(table(Actual = actual, Predicted = predicted))
-  
-  n = sum(cm) # number of instances
-  nc = nrow(cm) # number of SUBTYPEes
-  diag = diag(cm) # number of correctly SUBTYPEified instances per SUBTYPE 
-  rowsums = apply(cm, 1, sum) # number of instances per SUBTYPE
-  colsums = apply(cm, 2, sum) # number of predictions per SUBTYPE
-  p = rowsums / n # distribution of instances over the actual SUBTYPEes
-  q = colsums / n # distribution of instances over the predicted SUBTYPEes
-  
-  precision = diag / colsums 
-  recall = diag / rowsums 
-  f1 = 2 * precision * recall / (precision + recall) 
-  #data.frame(precision, recall, f1) 
-  macroPrecision = mean(precision)
-  macroRecall = mean(recall)
-  macroF1 = mean(f1)
-  mcc = mltools::mcc(preds = predicted,actuals = actual)
-  
-  
-  #All results 
-  Res <- matrix(c(precision,recall,f1,macroPrecision,macroRecall, macroF1, PR_AUC, ROC_AUC,mcc))
-  return(Res) #we tell the function what to output
-}

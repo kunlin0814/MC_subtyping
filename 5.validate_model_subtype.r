@@ -14,27 +14,6 @@ library(smotefamily)
 library(mlr3measures)
 library(kernlab)
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
-
-comparison <- c("Basal","LumA")
-other_group <- comparison[!comparison %in% "Basal"]
-comparison_header  <- paste(comparison, collapse = 'vs')
-prev_results_base <- paste(base,'Step4_model_create',comparison_header,sep="/")
-load(paste(prev_results_base,'model_tcga_subtype.rdata',sep="/"))
-
-each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
-minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
-
-data_test<- read.csv(paste(base,"all_cmt_combat_corrected.csv",sep="/"),header = T, row.names = 1)
-pheno_test <- read.csv(paste(base,"phenotype_cmt.csv",sep="/"),header = T)
-pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- other_group
-pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- "Basal"
-pheno_train <- pheno_tcga
-dim(data_test)
-#  11856    78
-
-
 Res_CMT <- function(prob,pred,test_data,model) {
   #AUC 
   prob = predict(model, test_data, type = "prob")
@@ -73,6 +52,39 @@ Res_CMT <- function(prob,pred,test_data,model) {
   Res <- matrix(c(precision,recall,f1,macroPrecision,macroRecall, macroF1, PR_AUC, ROC_AUC,mcc))
   return(Res) #we tell the function what to output
 }
+
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+
+comparison <- c("Basal","LumA")
+comparison_header  <- paste(comparison, collapse = 'vs')
+prev_results_base <- paste(base,'Step4_model_create',comparison_header,sep="/")
+load(paste(prev_results_base,'model_tcga_subtype.rdata',sep="/"))
+
+
+each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
+minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
+
+data_test<- read.csv(paste(base,"all_cmt_combat_corrected.csv",sep="/"),header = T, row.names = 1)
+pheno_test <- read.csv(paste(base,"phenotype_cmt.csv",sep="/"),header = T)
+
+if (toupper('basal') %in% toupper(comparison)){
+  other_group <- comparison[!comparison %in% "Basal"]
+  pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- other_group
+  pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- "Basal"
+}else if (!toupper('basal') %in% toupper(comparison) & toupper('LumA') %in% toupper(comparison)){
+  other_group <- comparison[!comparison %in% "LumA"]
+  pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- "LumA"
+  pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- other_group
+}
+
+
+pheno_train <- pheno_tcga
+dim(data_test)
+#  11856    78
+
+
+
 ############
 results_base <- paste(base,'Step5_model_validation',comparison_header,sep="/")
 dir.create(results_base,recursive = TRUE)
@@ -168,7 +180,7 @@ pdf(file=paste(results_base,
                sep="/")
     ,height = 4.5,width = 6)
 p <- PCA_plot2(t(test_freq50),pheno_test$SUBTYPE, 
-               title =paste("Selected genes-cmt_subtype Freq=25, n= ", nrow(train_freq50),sep=""))
+               title =paste("Selected genes-cmt_subtype Freq=50, n= ", nrow(train_freq50),sep=""))
 
 print(p)
 dev.off()

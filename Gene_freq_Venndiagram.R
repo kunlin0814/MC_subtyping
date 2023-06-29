@@ -13,7 +13,7 @@ source(
 base <-  "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
-comparison <- c("Basal","LumA")
+comparison <- c("Basal","Her2")
 
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
