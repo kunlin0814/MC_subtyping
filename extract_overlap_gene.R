@@ -13,13 +13,13 @@ base <-  "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
 main <- c("Basal","LumA","LumB","Her2")
 combine <- combn(main,2)
-results_base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set/Gene_overlap_list/LumA"
+results_base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set/Gene_overlap_list/Basal"
 combine[,6] <- c("LumA","Basal")
 
 total_25_list <- list()
 total_50_list <- list()
 #comparison <- c("Basal","LumA")
-for ( i in 4:6){
+for ( i in 1:3){
   comparison <- combine[,i]
   comparison_header  <- paste(comparison, collapse = 'vs')
   prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
@@ -57,13 +57,13 @@ overlap_50_table <- data.table(freq50=overlap_50_gene)
 union_25_table <- data.table(freq25=union_25_gene)
 union_50_table <- data.table(freq50=union_50_gene)
 
-fwrite(overlap_25_table, file=paste(results_base,"LumA_overlap_25.txt",sep="/"),
+fwrite(overlap_25_table, file=paste(results_base,"Basal_overlap_25.txt",sep="/"),
        col.names = T)
-fwrite(overlap_50_table, file=paste(results_base,"LumA_overlap_50.txt",sep="/"),
+fwrite(overlap_50_table, file=paste(results_base,"Basal_overlap_50.txt",sep="/"),
        col.names = T)
-fwrite(union_25_table, file=paste(results_base,"LumA_union_25.txt",sep="/"),
+fwrite(union_25_table, file=paste(results_base,"Basal_union_25.txt",sep="/"),
        col.names = T)
-fwrite(union_50_table, file=paste(results_base,"LumA_union_50.txt",sep="/"),
+fwrite(union_50_table, file=paste(results_base,"Basal_union_50.txt",sep="/"),
        col.names = T)
 
 
