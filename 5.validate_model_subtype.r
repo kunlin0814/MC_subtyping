@@ -53,8 +53,8 @@ Res_CMT <- function(prob,pred,test_data,model) {
   return(Res) #we tell the function what to output
 }
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal","LumA")
 comparison_header  <- paste(comparison, collapse = 'vs')
