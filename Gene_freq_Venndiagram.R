@@ -13,6 +13,10 @@ source(
 base <-  "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
+main <- c("Basal","LumA","LumB","Her2")
+combine <- combn(main,2)
+
+
 comparison <- c("Basal","Her2")
 
 comparison_header  <- paste(comparison, collapse = 'vs')
