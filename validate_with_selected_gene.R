@@ -32,7 +32,7 @@ cat <- "Basal"
 
 data_test<- read.csv(paste(base,"all_cmt_combat_corrected.csv",sep="/"),header = T, row.names = 1)
 pheno_test <- read.csv(paste(base,"phenotype_cmt.csv",sep="/"),header = T)
-pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- "LumA"
+pheno_test[pheno_test$SUBTYPE!="basal",]$SUBTYPE <- "Nonbasal"
 pheno_test[pheno_test$SUBTYPE=="basal",]$SUBTYPE <- "Basal"
 
 pheno_tcga <- read.csv(paste(base,"phenotype_all_tcga.csv",sep="/"),header = T)
@@ -103,7 +103,7 @@ pdf(file=paste(results_base,
                paste(cat,"_union_Freq_50.pdf",sep=""),
                sep="/") ,height = 4.5,width = 6)
 p <- PCA_plot(t(test_freq50_union),pheno_test$SUBTYPE,scale_status = F,
-              title =paste(paste(cat, " Freq=25, n= ", nrow(test_freq50_union),sep=""),sep=""))
+              title =paste(paste(cat, " Freq=50, n= ", nrow(test_freq50_union),sep=""),sep=""))
 
 print(p)
 dev.off()
