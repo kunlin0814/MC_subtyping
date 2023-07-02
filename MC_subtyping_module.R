@@ -47,10 +47,8 @@ PCA_plot <- function(data,group,scale_status=T,label= "", title = "") {
 }
 
 
+## phenotype table has the same sample order as the sample order in the colname of the data
 CBFpvcaFunction <- function(data,phenotypedata){
-  
-  #The only thing the function now assumes is that your phenotype table 
-  #is in the same order as your columns of your data.
   
   #packages <- c("pvca", "ggplot2", "Biobase") 
   #lapply(packages, library, character.only = TRUE, quietly = TRUE)
@@ -94,12 +92,13 @@ CBFpvcaFunction <- function(data,phenotypedata){
   return(p)
   
 }
+
+### We use ADAS algorithm to overampling the minority class to deal with imbalance dataset
 Balance_data <- function(data){
   train_indices <- createDataPartition(data$SUBTYPE, p = 0.8, list = FALSE, times = 1)
   train_data <- data[train_indices, ]
   test_data <- data[-train_indices, ]
   
-  # We use ADASYN (ADASYN is an method to oversampling the minority class)
   genData_ADAS <- ADAS(X = train_data[, -1], target = train_data$SUBTYPE, K = 5)
   train_df_adas <- genData_ADAS[["data"]]
   class_df <- train_df_adas[ncol(train_df_adas)]
@@ -113,8 +112,7 @@ Balance_data <- function(data){
   
   return(train_data_balanced)
 }
-# data <- data_model
-# nround <- 5
+
 Model_50_RF <- function(data,nround) {
   PC0_rf <- 0 ; PC1_rf <- 0;RC0_rf <- 0;RC1_rf <- 0;F10_rf <- 0;F11_rf <- 0;MF1_rf<-0 ; PR_AUC_rf <- 0;AUC_rf <- 0;MPC_rf <-0 ; MRC_rf <-0 ; MCC_rf <-0
   nround = nround
