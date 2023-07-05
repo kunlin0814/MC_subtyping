@@ -1,5 +1,11 @@
-#load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/2.tcga_DEG_subtype.rdata")
+## The whole pipeline involved 5 steps, but this script included the last four steps in the whole pipelie
+# Step1 : Use Combat to perform batch effect correction on the expression data  
+# Step2 : Identify Differential Gene expression 
+# Step3 : Feature selection in the random forest model with Boruta method and repeat 50 times 
+# Step4 : Create a random forest model and evaluate the performance in a training set
+# Step5 : Use the feature genes identified in Step3 to evaluate the model performance
 
+#load("E:/My Drive/Josh_MC_Paper_data/ML_gene_set/orig_results/2.tcga_DEG_subtype.rdata")
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
@@ -78,26 +84,11 @@ tcga_data_filtered_train <- data.frame(t(train_data[,-1]))
 
 tcga_data_dge <- DGEList(tcga_data_filtered_train)
 
-# class(tcga_data_dge)
-# head(tcga_data_dge[["counts"]])
-
-#rownames(tcga_data_dge[["counts"]]) <- colnames(tcga_data)
-
-#We can check our rownames were sucsessfully assigned by viewing our data.
-# head(rownames(tcga_data_dge[["counts"]]))
-# head(tcga_data_dge[["counts"]])
-# 
-# dim(tcga_data_dge[["counts"]])
-# # 9559  138
-# head(tcga_data_dge[["samples"]])
-
 #We can make a vector of factors from our phenotype table that contains sample group information
 samp_groups <- pheno_train_data
-#samp_groups
 
 #Lets now reassign the group values in the samples data.frame and check the result.
 tcga_data_dge[["samples"]]$group <- samp_groups
-# tcga_data_dge[["samples"]]
 
 
 #### Testing for Differential Expression ####
@@ -118,8 +109,7 @@ voom_data <- voom(tcga_data_dge, design, plot = TRUE)
 dev.off()
 voom_fit <- lmFit(object = voom_data, design = design)
 
-## use the following 
-
+## use eval to execuate the following with variables  
 comparison_command <- paste(comparison, collapse = '-')
 prestr <- "makeContrasts("
 poststr <- ",levels=design)"
