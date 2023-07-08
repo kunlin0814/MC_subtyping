@@ -1,21 +1,16 @@
 library(MultiBaC)
-#load packages 
 library(edgeR)
 library(limma)
 library(MultiAssayExperiment)
 library(sva)
 library(pvca)
-## 06/26/23
-## we can just use human TCGA data and ignore dogs
-#load("G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set/orig_results/1.combat_2data.rdata")
-#load("G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set/all_tcga_combat_2data.rdata")
+
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 source(
   'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 #'/Volumes/Research/GitHub/R_util/my_util.R')
-#'
-#'
+
 base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
   #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
   #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"

@@ -1,3 +1,7 @@
+library(MultiBaC)
+library(MultiAssayExperiment)
+library(sva)
+library(pvca)
 library(DMwR)
 library(grid)
 library(Boruta)
