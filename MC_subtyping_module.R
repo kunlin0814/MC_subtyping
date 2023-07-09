@@ -1,3 +1,4 @@
+library(data.table)
 library(MultiBaC)
 library(MultiAssayExperiment)
 library(sva)
