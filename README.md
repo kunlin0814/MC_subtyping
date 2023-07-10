@@ -62,6 +62,17 @@ After executing the pipeline, the script will produce the following results:
 - Random forest model
 - Model performance evaluation
 
+The overall directory structure should resemble the following:
+
+```
+base_folder/
+base_folder/Step1_combat/
+base_folder/Step2DEG/
+base_folder/Step3_feature_selection/
+base_folder/Step4_model_create/
+base_folder/Step5_model_validation/
+```
+
 ## License
 
 [Specify the license under which the project is released, if applicable.]

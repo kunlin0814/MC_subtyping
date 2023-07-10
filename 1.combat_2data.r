@@ -3,7 +3,7 @@
 # 1. the human TPM file 
 # 2. the dog TPM values file
 # 3. the subtype meta data for human and dog (sample name and subtype info)
-# Because we eventually want to use the feature seleted genes to test in dog, we only include genes that share between human and dog 
+# We eventually want to use the genes selected from the model to test in dog, we only include genes that share between human and dog 
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
@@ -23,7 +23,7 @@ B.rna <- B.rna[GeneName %in% overlap_gene_list, ]
 A.rna <- A.rna[GeneName %in% overlap_gene_list, ]
 B.rna <- data.frame(B.rna)
 A.rna <- data.frame(A.rna)
-#B.rna <- na.omit(B.rna)
+B.rna <- na.omit(B.rna)
 row.names(B.rna) <- B.rna$GeneName
 row.names(A.rna) <- A.rna$GeneName
 A.rna <- A.rna[,-1]
@@ -33,19 +33,20 @@ AB.rna <- cbind(A.rna,B.rna)
 
 phenotype_AB <- read.csv(file="All_dog_TCGA_subtype_meta.txt",header=T,sep="\t")
 AB.rna <- AB.rna[, colnames(AB.rna)%in% phenotype_AB$PATIENT_ID]
-#CMT has basal and nonbasal subtype 
+# CMT dataset has basal and nonbasal subtype 
 B_pheno <-phenotype_AB[phenotype_AB$SOURCE=='cmt',] 
 B.rna <- AB.rna[, colnames(AB.rna)%in% B_pheno$PATIENT_ID]
-phenotype_AB <- phenotype_AB[ match(colnames(AB.rna), phenotype_AB$PATIENT_ID ),]
-
+phenotype_AB <- phenotype_AB[match(colnames(AB.rna), phenotype_AB$PATIENT_ID ),]
+# human dataset 
 A_pheno <- phenotype_AB[phenotype_AB$SOURCE== "tcga",]
+# dog dataset
 B_pheno <- phenotype_AB[phenotype_AB$SOURCE== "cmt",]
 data <- data.frame(gene_id= rownames(AB.rna),AB.rna )
 rownames(phenotype_AB) <- phenotype_AB$PATIENT_ID
 
-# # Lets pass data[,-1] (without the gene_id column) to the CBFpcvaFunction.
-# # PCVA function looks for grouping variables to assess contribution
-# # of variance so it is important not to pass any columns that contain unique identifiers.
+## pass data[,-1] (without the gene_id column) to the CBFpcvaFunction.
+## PCVA function looks for grouping variables to assess contribution of variance,
+## so it is important not to pass any columns that contain unique identifiers.
 # pdf(file="CBFpvcaFunction.pdf", width = 6,height = 4)
 # p <- CBFpvcaFunction(t(data[,-1]), phenotypedata = phenotype_AB[,c("SOURCE","SUBTYPE")])
 # print(p)
@@ -67,12 +68,12 @@ tcga_corrected <- data.frame(combat_batch_corrected[,colnames(combat_batch_corre
 
 cmt_corrected <- data.frame(combat_batch_corrected[,colnames(combat_batch_corrected)%in%B_pheno$PATIENT_ID ])
 
-write.csv(A_pheno,"phenotype_all_tcga.csv" )
-write.csv(B_pheno,"phenotype_all_cmt.csv" )
+write.csv(A_pheno,paste(results_base,"phenotype_all_tcga.csv",sep="/"))
+write.csv(B_pheno,paste(results_base, "phenotype_all_cmt.csv",sep='/'))
 
-write.csv(combat_batch_corrected,"all_tcga_cmt_combat_corrected.csv")
-write.csv(tcga_corrected,"all_tcga_combat_corrected.csv")
-write.csv(cmt_corrected,"all_cmt_combat_corrected.csv")
+write.csv(combat_batch_corrected,paste(results_base,"all_tcga_cmt_combat_corrected.csv",sep='/'))
+write.csv(tcga_corrected,paste(results_base,"all_tcga_combat_corrected.csv",sep="/"))
+write.csv(cmt_corrected, paste(results_base,"all_cmt_combat_corrected.csv",sep='/'))
 
 #save.image("all_tcga_combat_2data.rdata")
 
