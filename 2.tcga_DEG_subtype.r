@@ -6,18 +6,17 @@ setwd(base)
 
 ## TCGA breast cancer subtype 
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
-previous_results_base <- paste(base,'Step1_combat',sep="/")
 comparison <- c("Basal","LumA")
 comparison_header  <- paste(comparison, collapse = 'vs')
 results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
 dir.create(results_base)
 
-tcga_data <- fread(paste(previous_results_base,"all_tcga_combat_corrected.csv",sep='/'),header = T)
+tcga_data <- fread(paste(base,"all_tcga_combat_corrected.csv",sep='/'),header = T)
 setDF(tcga_data)
 row.names(tcga_data) <- tcga_data$V1
 tcga_data <- tcga_data[,-1]
 
-pheno_tcga <- read.csv(paste(previous_results_base,"phenotype_all_tcga.csv",sep='/'),header = T)
+pheno_tcga <- read.csv(paste(base,"phenotype_all_tcga.csv",sep='/'),header = T)
 row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
 
 pheno_tcga$X <- NULL

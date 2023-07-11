@@ -68,12 +68,12 @@ tcga_corrected <- data.frame(combat_batch_corrected[,colnames(combat_batch_corre
 
 cmt_corrected <- data.frame(combat_batch_corrected[,colnames(combat_batch_corrected)%in%B_pheno$PATIENT_ID ])
 
-write.csv(A_pheno,paste(results_base,"phenotype_all_tcga.csv",sep="/"))
-write.csv(B_pheno,paste(results_base, "phenotype_all_cmt.csv",sep='/'))
+write.csv(A_pheno,paste(base,"phenotype_all_tcga.csv",sep="/"))
+write.csv(B_pheno,paste(base, "phenotype_all_cmt.csv",sep='/'))
 
-write.csv(combat_batch_corrected,paste(results_base,"all_tcga_cmt_combat_corrected.csv",sep='/'))
-write.csv(tcga_corrected,paste(results_base,"all_tcga_combat_corrected.csv",sep="/"))
-write.csv(cmt_corrected, paste(results_base,"all_cmt_combat_corrected.csv",sep='/'))
+write.csv(combat_batch_corrected,paste(base,"all_tcga_cmt_combat_corrected.csv",sep='/'))
+write.csv(tcga_corrected,paste(base,"all_tcga_combat_corrected.csv",sep="/"))
+write.csv(cmt_corrected, paste(base,"all_cmt_combat_corrected.csv",sep='/'))
 
 #save.image("all_tcga_combat_2data.rdata")
 
