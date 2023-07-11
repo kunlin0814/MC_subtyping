@@ -1,27 +1,23 @@
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
-source(
-  'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
-#'/Volumes/Research/GitHub/R_util/my_util.R')
 
 base <-"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
-  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
-#"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 
 ## TCGA breast cancer subtype 
 # "LumA"   "LumB"   "Basal"  "Her2"   "Normal"
+previous_results_base <- paste(base,'Step1_combat',sep="/")
 comparison <- c("Basal","LumA")
 comparison_header  <- paste(comparison, collapse = 'vs')
 results_base <- paste(base,'Step2DEG',comparison_header,sep="/")
 dir.create(results_base)
 
-tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
+tcga_data <- fread(paste(previous_results_base,"all_tcga_combat_corrected.csv",sep='/'),header = T)
 setDF(tcga_data)
 row.names(tcga_data) <- tcga_data$V1
 tcga_data <- tcga_data[,-1]
 
-pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
+pheno_tcga <- read.csv(paste(previous_results_base,"phenotype_all_tcga.csv",sep='/'),header = T)
 row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
 
 pheno_tcga$X <- NULL
@@ -33,13 +29,9 @@ tcga_data <- data.frame(t(tcga_data))
 tcga_data <- tcga_data %>%
   mutate(across(.cols = 1:length(.), .fns = as.numeric))
 
-
-### If there are negative count in the log2TPM, it DGEList will create error, and we need to remove gene with negative counts
-#tcga_data_dge <- DGEList(t(tcga_data))
-#Error: Negative counts not allowed
-
 tcga_data <- data.frame(t(tcga_data))
 
+### If there are negative count in the log2TPM, DGEList will create error, and we need to remove gene with negative counts
 # Identify genes with negative counts
 genes_with_negative_counts <- rownames(tcga_data)[apply(tcga_data, 1, function(x) any(x < 0))]
 
@@ -56,14 +48,14 @@ train_indices <- createDataPartition(tcga_data_filtered$SUBTYPE,
 train_data <- tcga_data_filtered[train_indices, ]
 test_data <- tcga_data_filtered[-train_indices, ]
 
-pheno_train_data <- factor(train_data$SUBTYPE)
+
 
 tcga_data_filtered_train <- data.frame(t(train_data[,-1]))
 
 tcga_data_dge <- DGEList(tcga_data_filtered_train)
 
 #We can make a vector of factors from our phenotype table that contains sample group information
-samp_groups <- pheno_train_data
+samp_groups <- factor(train_data$SUBTYPE)
 
 #Lets now reassign the group values in the samples data.frame and check the result.
 tcga_data_dge[["samples"]]$group <- samp_groups
@@ -75,29 +67,29 @@ tcga_data_dge[["samples"]]$group <- samp_groups
 
 #Set up our basic design matrix with 1 as intercept
 
-design <- model.matrix(~ 1 + group, data = tcga_data_dge[["samples"]])
+design <- model.matrix(~ group, data = tcga_data_dge[["samples"]])
 colnames(design) <- comparison
 
+
 pdf(file=paste(results_base,
-               paste(comparison_header,"voom_mean_variance_plot.pdf",sep="")
-               ,sep="/")
-               ,height = 4.5,width = 6)
+    paste(comparison_header,"voom_mean_variance_plot.pdf",sep="")
+    ,sep="/"),height = 4.5,width = 6)
 ## voom : Transform count data to log2-counts per million (logCPM) for Linear modelling
 voom_data <- voom(tcga_data_dge, design, plot = TRUE)
-dev.off()
+# dev.off()
 voom_fit <- lmFit(object = voom_data, design = design)
 
-## use variable to execute the following command 
+## use variable to execute the following command in R
 comparison_command <- paste(comparison, collapse = '-')
 prestr <- "makeContrasts("
 poststr <- ",levels=design)"
-commandstr=paste(prestr,comparison_header,"=",comparison_command,poststr,sep="")
+commandstr <-  paste(prestr,comparison_header,"=",comparison_command,poststr,sep="")
 cont.matrix <- eval(parse(text=commandstr))
 voom_fit <- contrasts.fit(fit = voom_fit, contrasts = cont.matrix)
 voom_fit <- eBayes(voom_fit)
 
-#We can run a quick diagnostic plot to again plot our mean variances after fitting our linear model and estimating.
-#The blue line here represents our residual standard deviation estimated by eBayes.
+## We can run a quick diagnostic plot toplot our mean variances after fitting our linear model and estimating.
+## The blue line here represents our residual standard deviation estimated by eBayes.
 pdf(file=paste(results_base,
                paste(comparison_header,"voom_fit_plot.pdf",sep=""),
                sep="/") ,height = 4.5,width = 6)
