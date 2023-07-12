@@ -1,7 +1,9 @@
 # This script will identify the differential expressed genes from the subtype you compared with limma
-# this script takes two input files,
+# This script takes two input files,
 # 1. the human TPM file
 # 2. the subtype meta data for human (sample name and subtype info)
+# This script will create a gene list that shows differential expression with p<0.05
+
 
 source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
