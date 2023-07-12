@@ -1,3 +1,14 @@
+# This script selects genes from a list of differentially expressed genes using the Boruta algorithm with 50 repetitions.
+# It requires two input files:
+# 1. The combat-corrected human TPM file.
+# 2. The subtype metadata for human, including sample names and subtype information.
+
+# The goal of this script is to create two gene lists, selected by the Boruta algorithm with 25 or 50 repetitions.
+# The Boruta algorithm is a feature selection method that determines the importance of genes for classification or prediction tasks.
+
+# Note: Prior to running this script, combat correction is assumed to have been performed on the input TPM file.
+# Combat correction helps to address batch effects and improves the accuracy of downstream analysis.
+
 source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
@@ -65,16 +76,12 @@ for (i in 1:50) {
 }
 
 # Create frequency tables for Boruta results
-gene_list <- unlist(boruta_results)
 boruta_freq <- table(unlist(boruta_results))
 
 boruta_df <-
   data.frame(feature = names(boruta_freq),
-             frequency = as.numeric(boruta_freq))
-
-# Sort
-boruta_df <-
-  boruta_df[order(boruta_df$frequency, decreasing = TRUE),]
+             frequency = as.numeric(boruta_freq)) %>% 
+  arrange(desc(frequency))
 
 # Apply cutoffs to filter features
 boruta_filtered25 <-
@@ -142,4 +149,4 @@ fwrite(
 # print(p)
 # dev.off()
 
-# save.image(paste(results_base,"feature_selection_tcga_subtype.rdata",sep ="/"))
+save.image(paste(results_base,"feature_selection_tcga_subtype.rdata",sep ="/"))

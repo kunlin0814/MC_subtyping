@@ -1,39 +1,31 @@
-library(randomForest)
-library(xgboost)
-library(DMwR)
-library(grid)
-library(Boruta)
-library(vars)
-library(dplyr)
-library(varSelRF)
-library(caret)
-library(e1071)
-library(ranger)
-library(smotefamily)
-library(mlr3measures)
-library(kernlab)
+# This script uses the genes selected by the Boruta algorithm as features to create a random forest and SVM model and evaluate their performance.
+# Note: This script assumes that the variables created by the previous script have been directly loaded.
+#       Make sure to run the "3.feature_selection_tcga_subtype.r" script prior to running this script.
+
+# The goal of this script is to utilize the selected genes as input features for training a random forest and SVM model.
+# The performance of the model will be evaluated to assess its predictive capabilities.
+
+# Please ensure that the necessary variables from the previous script are loaded and the required R packages are installed before running this script.
+
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
-source(
-  'C:/Users/abc73/Documents/GitHub/R_util/my_util.R')
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal","LumA")
 
 # We will use both train and test data
-
 comparison_header  <- paste(comparison, collapse = 'vs')
 prev_results_base <- paste(base,'Step3_feature_selection',comparison_header,sep="/")
 load(paste(prev_results_base,'feature_selection_tcga_subtype.rdata',sep="/"))
 each_pheno_num <- pheno_tcga %>% count(SUBTYPE)
+
 minor_group <- each_pheno_num[each_pheno_num$n ==min(each_pheno_num$n),]$SUBTYPE
 
 train_control <- trainControl(method = "cv" , number = 5,
                               classProbs = TRUE)
-# data <- data_model
-# nround <- 5
+
 Model_50_RF <- function(data,nround) {
   PC0_rf <- 0 ; PC1_rf <- 0;RC0_rf <- 0;RC1_rf <- 0;F10_rf <- 0;F11_rf <- 0;MF1_rf<-0 ; PR_AUC_rf <- 0;AUC_rf <- 0;MPC_rf <-0 ; MRC_rf <-0 ; MCC_rf <-0
   nround = nround
@@ -202,84 +194,28 @@ Res_CMT <- function(prob,pred,test_data,model) {
 }
 
 ############
-
-# comparison <- c("Basal","LumA")
-# # We will use both train and test data 
-# voom_tt0.05 <- read.csv('BasalvsLumA_DEG_train_tgca_subtype.csv',header = T, row.names = 1)
-# comparison_header  <- paste(comparison, collapse = 'vs')
 results_base <- paste(base,'Step4_model_create',comparison_header,sep="/")
 dir.create(results_base,recursive = TRUE)
 
-# tcga_data <- fread("all_tcga_combat_corrected.csv",header = T)
-# setDF(tcga_data)
-# row.names(tcga_data) <- tcga_data$V1
-# tcga_data <- tcga_data[,-1]
-
-# pheno_tcga <- read.csv("phenotype_all_tcga.csv",header = T)
-# row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
-# pheno_tcga$X <- NULL
-# pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
-# tcga_data <- tcga_data[,colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
-
-#data_model <- read.csv( "data_model_tcga_subtype.csv",header = T,row.names = 1)
-
 #Freq = 25 times 
 data_model<- data.frame(SUBTYPE= factor(pheno_tcga$SUBTYPE), pca_data_freq25)
-dim(data_model) #filter = 25 times, 240 genes
-#664 241
-
-#check if class is fortor
-class(data_model$SUBTYPE)
 
 res_tcga_subtype_rf_freq25 <- Model_50_RF(data = data_model,5)
-#View(res_tcga_subtype_rf_freq25)
+
 
 res_tcga_subtype_svm_freq25 <- Model_50_SVM(data = data_model,5)
-#View(res_tcga_subtype_svm_freq25)
 
-
-#PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
 write.csv(res_tcga_subtype_rf_freq25,paste(results_base,"res_tcga_subtype_rf_freq25.csv",sep="/"))
 write.csv(res_tcga_subtype_svm_freq25,paste(results_base,"res_tcga_subtype_svm_freq25.csv",sep="/"))
-
-##########
-
-#Freq freq40 times
-data_model<- data.frame(SUBTYPE= factor(pheno_tcga$SUBTYPE), pca_data_freq40)
-
-dim(data_model) #freq = 40 times, 506 genes
-#664 207
-
-#check if class is fortor
-class(data_model$SUBTYPE)
-
-res_tcga_subtype_rf_freq40 <- Model_50_RF(data = data_model,5)
-#View(res_tcga_subtype_rf_freq40)
-
-res_tcga_subtype_svm_freq40 <- Model_50_SVM(data = data_model,5)
-#View(res_tcga_subtype_svm_freq40)
-
-#PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
-write.csv(res_tcga_subtype_rf_freq40,paste(results_base,"res_tcga_subtype_rf_freq40.csv",sep="/"))
-write.csv(res_tcga_subtype_svm_freq40,paste(results_base,"res_tcga_subtype_svm_freq40.csv",sep="/"))
 
 ###### 
 #Freq freq50 times 
 data_model<- data.frame(SUBTYPE= factor(pheno_tcga$SUBTYPE), pca_data_freq50)
-
-dim(data_model) #freq = 15 times, 7 genes
-#664 138
-
-#check if class is fortor
-class(data_model$SUBTYPE)
-
 res_tcga_subtype_rf_freq50 <- Model_50_RF(data = data_model,5)
-#View(res_tcga_subtype_rf_freq50)
-
 res_tcga_subtype_svm_freq50 <- Model_50_SVM(data = data_model,5)
-#View(res_tcga_subtype_svm_freq50)
 
-#PCA_plot(data_model[,-1],data_model$SUBTYPE,title = "PCA of tcga data,subtype(n=12)")
+
+
 write.csv(res_tcga_subtype_rf_freq50,paste(results_base,"res_tcga_subtype_rf_freq50.csv",sep="/"))
 write.csv(res_tcga_subtype_svm_freq50,paste(results_base,"res_tcga_subtype_svm_freq50.csv",sep="/"))
 
@@ -290,11 +226,9 @@ sum_model_ALL <- data.frame(metrics = rownames(res_tcga_subtype_rf_freq50),
                         svm_freq40= res_tcga_subtype_svm_freq40$mean,
                         rf_freq50= res_tcga_subtype_rf_freq50$mean,
                         svm_freq50= res_tcga_subtype_svm_freq50$mean)
-#View(sum_model_ALL)
 
 write.csv(sum_model_ALL,paste(results_base,"sum_model_tcga_subtype.csv",sep="/"))
 
 save.image(paste(results_base,"model_tcga_subtype.rdata",sep="/"))
 
-df_genes <- data.frame(freq50 = boruta_features50)
-write.csv(df_genes,paste(results_base,"df_genes_freq50_subtypes.csv",sep="/"))
+

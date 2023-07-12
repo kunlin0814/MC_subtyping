@@ -1,9 +1,17 @@
-# This script will do the combat correction for the batch effects between dog data and human data
-# this script takes three input files,
-# 1. the human TPM file
-# 2. the dog TPM values file
-# 3. the subtype meta data for human and dog (sample name and subtype info)
-# We eventually want to use the genes selected from the model to test in dog, we only include genes that share between human and dog
+# This script performs combat correction to address batch effects between dog data and human data.
+# It requires three input files:
+# 1. The human TPM file.
+# 2. The dog TPM values file.
+# 3. The subtype metadata for both human and dog, including sample names and subtype information.
+
+# The goal of this script is to select genes that are shared between human and dog for further analysis.
+# These genes will be tested in the dog dataset using the genes selected from the model.
+
+# Note: Combat correction is applied to mitigate the impact of batch effects, enabling more accurate comparison and analysis between the datasets.
+# Batch effects can arise due to technical variations in data collection or processing, leading to undesired variations in the results.
+
+# Please make sure to have the necessary input files and the required R packages installed before running this script.
+
 source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
