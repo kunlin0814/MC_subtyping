@@ -1,13 +1,14 @@
-# This script uses the genes selected by the Boruta algorithm as features to create and evaluate the performance of a random forest and SVM model.
+# This script utilizes the genes selected by the Boruta algorithm as features to create and evaluate the performance of a random forest and SVM model.
 # Note: 
 # 1. The script automatically identifies the group with the minimum number of samples between two classes as the minority group.
-# 2. This script assumes that the variables created by the previous script have been directly loaded.
-#    Make sure to run the "3.feature_selection_tcga_subtype.r" script prior to executing this script.
+# 2. Prior to running this script, ensure that the variables created by the previous script have been directly loaded.
+#    Please run the "3.feature_selection_tcga_subtype.r" script before executing this script.
 
-# The objective of this script is to utilize the selected genes as input features for training a random forest and SVM model.
-# The performance of the model will be assessed to determine its predictive capabilities.
+# The main objective of this script is to train a random forest and SVM model using the selected genes as input features.
+# The performance of the models will be evaluated to assess their predictive capabilities.
 
-# Before running this script, please ensure that the necessary variables from the previous script are loaded and the required R packages are installed.
+# Before running this script, make sure to load the necessary variables from the previous script and install the required R packages.
+
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
