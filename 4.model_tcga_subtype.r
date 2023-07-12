@@ -1,12 +1,13 @@
-# This script uses the genes selected by the Boruta algorithm as features to create a random forest and SVM model and evaluate their performance.
-# Note: This script assumes that the variables created by the previous script have been directly loaded.
-#       Make sure to run the "3.feature_selection_tcga_subtype.r" script prior to running this script.
+# This script uses the genes selected by the Boruta algorithm as features to create and evaluate the performance of a random forest and SVM model.
+# Note: 
+# 1. The script automatically identifies the group with the minimum number of samples between two classes as the minority group.
+# 2. This script assumes that the variables created by the previous script have been directly loaded.
+#    Make sure to run the "3.feature_selection_tcga_subtype.r" script prior to executing this script.
 
-# The goal of this script is to utilize the selected genes as input features for training a random forest and SVM model.
-# The performance of the model will be evaluated to assess its predictive capabilities.
+# The objective of this script is to utilize the selected genes as input features for training a random forest and SVM model.
+# The performance of the model will be assessed to determine its predictive capabilities.
 
-# Please ensure that the necessary variables from the previous script are loaded and the required R packages are installed before running this script.
-
+# Before running this script, please ensure that the necessary variables from the previous script are loaded and the required R packages are installed.
 source(
   'C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
@@ -228,7 +229,7 @@ sum_model_ALL <- data.frame(metrics = rownames(res_tcga_subtype_rf_freq50),
                         svm_freq50= res_tcga_subtype_svm_freq50$mean)
 
 write.csv(sum_model_ALL,paste(results_base,"sum_model_tcga_subtype.csv",sep="/"))
-
-save.image(paste(results_base,"model_tcga_subtype.rdata",sep="/"))
+# 
+# save.image(paste(results_base,"model_tcga_subtype.rdata",sep="/"))
 
 

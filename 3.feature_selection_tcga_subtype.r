@@ -11,8 +11,8 @@
 
 source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+#"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal", "LumA")
 comparison_header  <- paste(comparison, collapse = 'vs')
@@ -45,12 +45,12 @@ pheno_tcga <-
 row.names(pheno_tcga) <- pheno_tcga$PATIENT_ID
 
 pheno_tcga$X <- NULL
-pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison, ]
+pheno_tcga <- pheno_tcga[pheno_tcga$SUBTYPE %in% comparison,]
 tcga_data <-
   tcga_data[, colnames(tcga_data) %in% pheno_tcga$PATIENT_ID]
 
 data <-
-  data.frame(t(tcga_data[rownames(tcga_data) %in% rownames(voom_tt0.05), ]))
+  data.frame(t(tcga_data[rownames(tcga_data) %in% rownames(voom_tt0.05),]))
 data$SUBTYPE <- factor(pheno_tcga$SUBTYPE)
 
 # Perform Boruta feature selection with 50 runs
@@ -63,8 +63,8 @@ for (i in 1:50) {
                                        p = 0.8,
                                        list = FALSE,
                                        times = 1)
-  train_data <- data[train_indices,]
-  test_data <- data[-train_indices,]
+  train_data <- data[train_indices, ]
+  test_data <- data[-train_indices, ]
   
   boruta_genes <- Boruta(SUBTYPE ~ ., train_data)
   boruta_fixed <- TentativeRoughFix(boruta_genes)
@@ -80,7 +80,7 @@ boruta_freq <- table(unlist(boruta_results))
 
 boruta_df <-
   data.frame(feature = names(boruta_freq),
-             frequency = as.numeric(boruta_freq)) %>% 
+             frequency = as.numeric(boruta_freq)) %>%
   arrange(desc(frequency))
 
 # Apply cutoffs to filter features
@@ -105,6 +105,33 @@ pca_data_freq50 <-
 
 gene_list_freq25 <- data.table(gene = colnames(pca_data_freq25))
 gene_list_freq50 <- data.table(gene = colnames(pca_data_freq50))
+
+write.table(
+  pca_data_freq25,
+  file = paste(
+    results_base,
+    paste(comparison_header, "PCA_data_gene_list_freq25.txt", sep = "_"),
+    sep = "/"
+  ),
+  quote = F,
+  eol = "\n",
+  row.names = T,
+  col.names = T
+)
+
+write.table(
+  pca_data_freq50,
+  file = paste(
+    results_base,
+    paste(comparison_header, "PCA_data_gene_list_freq50.txt", sep = "_"),
+    sep = "/"
+  ),
+  quote = F,
+  eol = "\n",
+  row.names = T,
+  col.names = T
+)
+
 
 fwrite(
   gene_list_freq25,
@@ -149,4 +176,5 @@ fwrite(
 # print(p)
 # dev.off()
 
-save.image(paste(results_base,"feature_selection_tcga_subtype.rdata",sep ="/"))
+save.image(paste(results_base, "feature_selection_tcga_subtype.rdata", sep =
+                   "/"))
