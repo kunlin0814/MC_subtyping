@@ -24,13 +24,9 @@ The pipeline consists of the following five steps:
 
 To run the script and execute the pipeline, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
+1. Clone the repository: `git clone https://github.com/kunlin0814/MC_subtyping`
 
 2. Install the required dependencies:
-
-   ```
-   pip install -r requirements.txt
-   ```
 
 3. Run the following scripts in order:
 
@@ -74,8 +70,8 @@ After executing the pipeline, the script will produce the following results:
 - Batch-corrected expression data
 - Differential gene expression results
 - Selected feature genes
-- Random forest model
 - Model performance evaluation
+- Subypting results in canine mammary tumor dataset
 
 The overall directory structure should resemble the following:
 
