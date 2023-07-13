@@ -36,7 +36,10 @@ To run the script and execute the pipeline, follow these steps:
    - `4.model_tcga_subtype.R`
    - `5.validate_model_subtype.R`
 
-   Note: Ensure that the necessary variables are loaded and the required R packages are installed before running each script.
+Note:
+
+- Make sure to set the `base` path consistently across all scripts and ensure the comparison used is the same. For example, if you set `comparison <- c("Basal", "LumA")`, it means you are comparing the Basal subtype with the LumA subtype.
+- Before running each script, ensure that the necessary variables are loaded and the required R packages are installed in your R environment. You can use the `install.packages()` function to install any missing packages.
 
 ## Dependencies
 
