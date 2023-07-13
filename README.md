@@ -1,22 +1,24 @@
-# Mammary tumor subtyping
+# Subtyping Canine Mammary Tumors with Selected Genes using Machine Learning Models
 
 ## Description
 
-This project implements a pipeline consisting of five steps to analyze RNA-seq expression data and build a random forest model.
+The goal of this project is to utilize machine learning methods to identify the most relevant genes for subtyping human breast cancer. These relevant genes can also be employed to subtype canine mammary tumors, enabling a comparative oncology analysis.
+
+The project implements a pipeline consisting of five steps to analyze RNA-seq expression data from the TCGA dataset. The pipeline aims to select the most relevant genes and evaluate their effectiveness in subtyping mammary tumors in dogs.
 
 ## Pipeline Steps
 
-The whole pipeline involved 5 steps, but this script included the last four steps in the whole pipeline.
+The pipeline consists of the following five steps:
 
-1. **Step1**: Use Combat to perform batch effect correction on the expression data.
+1. **Step 1**: Batch Effect Correction: Apply Combat to perform batch effect correction on the expression data.
 
-2. **Step2**: Identify Differential Gene expression.
+2. **Step 2**: Differential Gene Expression: Identify differentially expressed genes.
 
-3. **Step3**: Perform feature selection using the Boruta method in a random forest model. The process is repeated 50 times.
+3. **Step 3**: Feature Selection: Perform gene (feature) selection using the Boruta method with differentially expressed genes in a random forest model. The process is repeated 50 times.
 
-4. **Step4**: Create a random forest model and evaluate its performance in a training set.
+4. **Step 4**: Model Creation: Build a random forest model and evaluate its performance on a training set.
 
-5. **Step5**: Evaluate the model performance using the feature genes identified in Step3.
+5. **Step 5**: Model Validation: Evaluate the performance of the model using the feature genes identified in Step 3.
 
 ## Usage
 
@@ -26,10 +28,25 @@ To run the script and execute the pipeline, follow these steps:
 
 2. Install the required dependencies:
 
+   ```
+   pip install -r requirements.txt
+   ```
+
+3. Run the following scripts in order:
+
+   - `1.combat_2data.R`
+   - `2.tcga_DEG_subtype.R`
+   - `3.feature_selection_tcga_subtype.R`
+   - `4.model_tcga_subtype.R`
+   - `5.validate_model_subtype.R`
+
+   Note: Ensure that the necessary variables are loaded and the required R packages are installed before running each script.
+
 ## Dependencies
 
-The following R packages are required to run the script:
+The following R packages are required to run the scripts:
 
+- datable
 - DMwR
 - grid
 - Boruta
@@ -49,8 +66,6 @@ The following R packages are required to run the script:
 - reshape2
 - biomaRt
 - randomForest
-
-3. Run the script: `python script.py`
 
 ## Results
 
@@ -73,10 +88,6 @@ base_folder/Step4_model_create/
 base_folder/Step5_model_validation/
 ```
 
-## License
-
-[Specify the license under which the project is released, if applicable.]
-
 ## Acknowledgements
 
-[Mention any acknowledgements or credits for external contributions, libraries, or resources used in the project.]
+We would like to express our gratitude to Tanakamol Mahawan for his invaluable contribution to designing the pipeline and the prototype design. His expertise and insights were instrumental in shaping the project and its success.
