@@ -89,4 +89,4 @@ base_folder/Step5_model_validation/
 
 ## Acknowledgements
 
-We would like to express our gratitude to Tanakamol Mahawan for his invaluable contribution to designing the pipeline and the prototype design. His expertise and insights were instrumental in shaping the project and its success.
+We would like to express our gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contribution to designing the pipeline and the prototype design. His expertise and insights were instrumental in shaping the project and its success.
