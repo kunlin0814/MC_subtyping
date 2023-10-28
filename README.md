@@ -6,6 +6,8 @@ The goal of this project is to utilize machine learning methods to identify the 
 
 The project implements a pipeline consisting of five steps to analyze RNA-seq expression data from the TCGA dataset. The pipeline aims to select the most relevant genes and evaluate their effectiveness in subtyping mammary tumors in dogs.
 
+The subtyping results were used in the research conducted by Watson, J. et al., titled 'Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs,' published in Breast Cancer Res 25, 114 (2023)
+
 ## Pipeline Steps
 
 The pipeline consists of the following five steps:
@@ -90,4 +92,4 @@ base_folder/Step5_model_validation/
 
 ## Acknowledgements
 
-We would like to express our gratitude to Tanakamol Mahawan for his invaluable contribution to designing the pipeline and the prototype design. His expertise and insights were instrumental in shaping the project and its success.
+We extend our heartfelt gratitude to Tanakamol Mahawan for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
