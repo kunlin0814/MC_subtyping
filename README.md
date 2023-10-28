@@ -6,6 +6,9 @@ The goal of this project is to utilize machine learning methods to identify the 
 
 The project implements a pipeline consisting of five steps to analyze RNA-seq expression data from the TCGA dataset. The pipeline aims to select the most relevant genes and evaluate their effectiveness in subtyping mammary tumors in dogs.
 
+The subtyping results were used in the research conducted by Watson, J. et al.,
+Titled 'Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs,' published in Breast Cancer Res 25, 114 (2023)
+
 ## Pipeline Steps
 
 The pipeline consists of the following five steps:
@@ -24,9 +27,13 @@ The pipeline consists of the following five steps:
 
 To run the script and execute the pipeline, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/kunlin0814/MC_subtyping`
+1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
 
 2. Install the required dependencies:
+
+   ```
+   pip install -r requirements.txt
+   ```
 
 3. Run the following scripts in order:
 
@@ -36,10 +43,7 @@ To run the script and execute the pipeline, follow these steps:
    - `4.model_tcga_subtype.R`
    - `5.validate_model_subtype.R`
 
-Note:
-
-- Make sure to set the `base` path consistently across all scripts and ensure the comparison used is the same. For example, if you set `comparison <- c("Basal", "LumA")`, it means you are comparing the Basal subtype with the LumA subtype.
-- Before running each script, ensure that the necessary variables are loaded and the required R packages are installed in your R environment. You can use the `install.packages()` function to install any missing packages.
+   Note: Ensure that the necessary variables are loaded and the required R packages are installed before running each script.
 
 ## Dependencies
 
@@ -73,8 +77,8 @@ After executing the pipeline, the script will produce the following results:
 - Batch-corrected expression data
 - Differential gene expression results
 - Selected feature genes
+- Random forest model
 - Model performance evaluation
-- Subypting results in canine mammary tumor dataset
 
 The overall directory structure should resemble the following:
 
@@ -89,4 +93,4 @@ base_folder/Step5_model_validation/
 
 ## Acknowledgements
 
-We would like to express our gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contribution to designing the pipeline and the prototype design. His expertise and insights were instrumental in shaping the project and its success.
+We extend our heartfelt gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
