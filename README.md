@@ -93,4 +93,4 @@ base_folder/Step5_model_validation/
 
 ## Acknowledgements
 
-We extend our heartfelt gratitude to Tanakamol Mahawan for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
+We extend our heartfelt gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
