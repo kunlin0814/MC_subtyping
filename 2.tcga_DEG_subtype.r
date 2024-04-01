@@ -12,9 +12,10 @@
 # Please ensure that the required input files are available and the necessary R packages are installed before running this script.
 
 
-source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
+source('C:/github/MC_subtyping/MC_subtyping_module.R')
 
-base <- "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  "C:/Users/kho/Downloads/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 
 ## TCGA breast cancer subtype
@@ -73,7 +74,6 @@ test_data <- tcga_data_filtered[-train_indices,]
 
 
 tcga_data_filtered_train <- data.frame(t(train_data[, -1]))
-
 tcga_data_dge <- DGEList(tcga_data_filtered_train)
 
 #We can make a vector of factors from our phenotype table that contains sample group information
@@ -82,7 +82,12 @@ samp_groups <- factor(train_data$SUBTYPE)
 #Lets now reassign the group values in the samples data.frame and check the result.
 tcga_data_dge[["samples"]]$group <- samp_groups
 
-
+# dim(tcga_data_dge)
+# colnames(tcga_data_dge)
+# tcga_data_dge$samples
+# tcga_data_dge$genes 
+#<- data.frame(Symbol=paste0("Gene",1:ngenes))
+# show(tcga_data_dge)
 #### Testing for Differential Expression ####
 
 ##### Limma #######
