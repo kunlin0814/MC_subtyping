@@ -14,7 +14,7 @@
 
 source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
 
-base <- "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+base <- "D:/§Úªº¶³ºÝµwºÐ/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 
 ## TCGA breast cancer subtype
