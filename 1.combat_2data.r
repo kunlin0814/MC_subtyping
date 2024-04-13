@@ -12,16 +12,16 @@
 
 # Please make sure to have the necessary input files and the required R packages installed before running this script.
 
-source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
+source('C:/github/MC_subtyping/MC_subtyping_module.R')
 
 base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
+  "C:/Users/kho/Downloads/Josh_MC_Paper_data/ML_gene_set"
 #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 A.rna  <- fread("TCGA_BRCA_log2TPM+1.csv", header = T)
 colnames(A.rna)[1] <- 'GeneName'
 
-results_base <- paste(base, 'Step1_combat', comparison_header, sep = "/")
+results_base <- paste(base, 'Step1_combat', sep = "/")
 dir.create(results_base)
 
 B.rna  <- fread("cmt_all.csv", header = T)
