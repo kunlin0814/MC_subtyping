@@ -97,17 +97,16 @@ tcga_data_dge[["samples"]]$group <- samp_groups
 design <- model.matrix( ~ group, data = tcga_data_dge[["samples"]])
 colnames(design) <- comparison
 
-
-pdf(
-  file = paste(
-    results_base,
-    paste(comparison_header, "voom_mean_variance_plot.pdf", sep = "")
-    ,
-    sep = "/"
-  ),
-  height = 4.5,
-  width = 6
-)
+# pdf(
+#   file = paste(
+#     results_base,
+#     paste(comparison_header, "voom_mean_variance_plot.pdf", sep = "")
+#     ,
+#     sep = "/"
+#   ),
+#   height = 4.5,
+#   width = 6
+# )
 ## voom : Transform count data to log2-counts per million (logCPM) for Linear modelling
 voom_data <- voom(tcga_data_dge, design, plot = TRUE)
 # dev.off()
@@ -130,19 +129,30 @@ voom_fit <- eBayes(voom_fit)
 
 ## We can run a quick diagnostic plot toplot our mean variances after fitting our linear model and estimating.
 ## The blue line here represents our residual standard deviation estimated by eBayes.
-pdf(
-  file = paste(
-    results_base,
-    paste(comparison_header, "voom_fit_plot.pdf", sep = ""),
-    sep = "/"
-  ) ,
-  height = 4.5,
-  width = 6
-)
-plotSA(voom_fit)
-dev.off()
+# pdf(
+#   file = paste(
+#     results_base,
+#     paste(comparison_header, "voom_fit_plot.pdf", sep = ""),
+#     sep = "/"
+#   ) ,
+#   height = 4.5,
+#   width = 6
+# )
+# plotSA(voom_fit)
+# dev.off()
 
 voom_tt <- topTable(voom_fit, p.value = 1, number = Inf)
+target_df <- as.data.frame(voom_tt)
+EnhancedVolcano(target_df,
+                lab = target_df$Gene,
+                title = 'LM vs Prim prostate',
+                x = 'logFC',
+                y = 'adj.P.Val', 
+                FCcutoff = 0.5,
+                pointSize = 3.0,
+                labSize = 6.0)
+
+
 ## select only differential expressed genes with p<=0.05
 voom_tt0.05 <- voom_tt[voom_tt$adj.P.Val <= 0.05, ]
 pca_data <-
