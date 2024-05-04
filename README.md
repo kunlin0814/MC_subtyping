@@ -91,6 +91,10 @@ base_folder/Step4_model_create/
 base_folder/Step5_model_validation/
 ```
 
+## Publication
+
+Watson, J., Wang, T., Ho, KL. et al. Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs. Breast Cancer Res 25, 114 (2023). https://doi.org/10.1186/s13058-023-01705-5
+
 ## Acknowledgements
 
 We extend our heartfelt gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
