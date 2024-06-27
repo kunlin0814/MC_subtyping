@@ -9,9 +9,9 @@
 # Note: Prior to running this script, combat correction is assumed to have been performed on the input TPM file.
 # Combat correction helps to address batch effects and improves the accuracy of downstream analysis.
 
-source('C:/Users/abc73/Documents/GitHub/MC_subtyping/MC_subtyping_module.R')
+source('/Volumes/Research/GitHub/MC_subtyping/MC_subtyping_module.R')
 
-base <- "E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+base <- '/Users/kun-linho/Library/CloudStorage/GoogleDrive-abc730814@gmail.com/My Drive/Josh_MC_Paper_data/ML_gene_set'
 #"G:/MAC_Research_Data/Josh_MC_Paper_data/ML_gene_set"
 
 comparison <- c("Basal", "LumA")
@@ -58,7 +58,7 @@ boruta_results <- list()
 
 for (i in 1:50) {
   set.seed(i)  # Set seed for reproducibility
-  
+  i <- 1  
   train_indices <- createDataPartition(data$SUBTYPE,
                                        p = 0.8,
                                        list = FALSE,

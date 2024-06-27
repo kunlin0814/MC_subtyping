@@ -12,10 +12,11 @@
 # Please ensure that the required input files are available and the necessary R packages are installed before running this script.
 
 
-source('C:/github/MC_subtyping/MC_subtyping_module.R')
+source('/Volumes/Research/GitHub/MC_subtyping/MC_subtyping_module.R')
 
-base <- #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
-  "C:/Users/kho/Downloads/Josh_MC_Paper_data/ML_gene_set"
+base <-'/Users/kun-linho/Library/CloudStorage/GoogleDrive-abc730814@gmail.com/My Drive/Josh_MC_Paper_data/ML_gene_set'
+  #"E:/My Drive/Josh_MC_Paper_data/ML_gene_set"
+  #"C:/Users/kho/Downloads/Josh_MC_Paper_data/ML_gene_set"
 setwd(base)
 
 ## TCGA breast cancer subtype
