@@ -9,19 +9,13 @@ The project implements a pipeline consisting of five steps to analyze RNA-seq ex
 The subtyping results were used in the research conducted by Watson, J. et al.,
 Titled 'Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs,' published in Breast Cancer Res 25, 114 (2023)
 
-## Pipeline Steps
+## Pipeline Overview
+1. **Batch Effect Correction** – Adjust expression data with ComBat.  
+2. **Differential Expression** – Identify subtype-specific differentially expressed genes (DEGs).  
+3. **Feature Selection** – Apply Boruta with random forests (50 iterations) to select robust features.  
+4. **Model Training** – Train and evaluate a random forest classifier on TCGA data.  
+5. **Validation** – Test selected features and models on canine mammary tumor data.  
 
-The pipeline consists of the following five steps:
-
-1. **Step 1**: Batch Effect Correction: Apply Combat to perform batch effect correction on the expression data.
-
-2. **Step 2**: Differential Gene Expression: Identify differentially expressed genes.
-
-3. **Step 3**: Feature Selection: Perform gene (feature) selection using the Boruta method with differentially expressed genes in a random forest model. The process is repeated 50 times.
-
-4. **Step 4**: Model Creation: Build a random forest model and evaluate its performance on a training set.
-
-5. **Step 5**: Model Validation: Evaluate the performance of the model using the feature genes identified in Step 3.
 
 ## Usage
 
@@ -39,31 +33,6 @@ To run the script and execute the pipeline, follow these steps:
 
    Note: Ensure that the necessary variables are loaded and the required R packages are installed before running each script.
 
-## Dependencies
-
-The following R packages are required to run the scripts:
-
-- datable
-- DMwR
-- grid
-- Boruta
-- vars
-- varSelRF
-- caret
-- e1071
-- ranger
-- sva
-- smotefamily
-- mlr3measures
-- kernlab
-- edgeR
-- limma
-- tmaptools
-- tidyverse
-- reshape2
-- biomaRt
-- randomForest
-
 ## Results
 
 After executing the pipeline, the script will produce the following results:
@@ -78,16 +47,17 @@ The overall directory structure should resemble the following:
 
 ```
 base_folder/
-base_folder/Step1_combat/
-base_folder/Step2DEG/
-base_folder/Step3_feature_selection/
-base_folder/Step4_model_create/
-base_folder/Step5_model_validation/
+ ├─ Step1_combat/
+ ├─ Step2_DEG/
+ ├─ Step3_feature_selection/
+ ├─ Step4_model_create/
+ └─ Step5_model_validation/
 ```
 
 ## Publication
 
-Watson, J., Wang, T., Ho, KL. et al. Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs. Breast Cancer Res 25, 114 (2023). https://doi.org/10.1186/s13058-023-01705-5
+Watson J, Wang T, Ho KL, et al. Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs.
+Breast Cancer Research. 2023;25:114. https://doi.org/10.1186/s13058-023-01705-5
 
 ## Acknowledgements
 
