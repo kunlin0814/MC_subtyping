@@ -16,6 +16,7 @@ The work supports the findings in Watson, J. et al., *Human basal-like breast ca
 - Suggested packages: `data.table`, `sva`, `pvca`, `ggplot2`, `limma`, `edgeR`, `EnhancedVolcano`, `Boruta`, `randomForest`, `caret`, `ComplexHeatmap`, plus Bioconductor manager `BiocManager`.  
 - Scripts auto-install missing packages via `load_dependencies()` (see `R/utils.R`), but pre-installing can save time.
 - Pipeline parameters live in `config/config.yml` (e.g., `boruta_runs`, `model_rounds`, CV folds, tune length, and file names).
+- TCGA expression file `TCGA_BRCA_log2TPM+1.csv` is large; provide it on request if not already available locally.
 
 ## Data
 Expected file names and locations are configurable in `config/config.yml`:
