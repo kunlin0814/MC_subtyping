@@ -57,10 +57,10 @@ target_subtypes <- comparison
 pheno_cmt_filtered <- pheno_cmt
 
 if ("Basal" %in% target_subtypes) {
-    other_group <- setdiff(target_subtypes, "Basal")
+    other_group <- setdiff(target_subtypes, "Basal")[1]
     pheno_cmt_filtered$SUBTYPE <- ifelse(pheno_cmt_filtered$SUBTYPE == "Basal", "Basal", other_group)
 } else if ("LumA" %in% target_subtypes) {
-    other_group <- setdiff(target_subtypes, "LumA")
+    other_group <- setdiff(target_subtypes, "LumA")[1]
     pheno_cmt_filtered$SUBTYPE <- ifelse(pheno_cmt_filtered$SUBTYPE == "LumA", "LumA", other_group)
 } else {
     warning("Neither Basal nor LumA found in comparison. Subtype mapping might be incorrect.")

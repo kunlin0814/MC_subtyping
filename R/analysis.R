@@ -32,7 +32,7 @@ Balance_data <- function(data) {
 #' @return A vector of performance metrics
 #' @export
 Res_CMT <- function(prob, pred, test_data, model) {
-    levels_subtype <- levels(as.factor(test_data$SUBTYPE))
+    levels_subtype <- levels(test_data$SUBTYPE)
 
     # AUC
     roc_c <- tryCatch(pROC::auc(test_data$SUBTYPE, prob[, 2]), error = function(e) NA)
@@ -55,8 +55,6 @@ Res_CMT <- function(prob, pred, test_data, model) {
 
     cm <- as.matrix(table(Actual = actual, Predicted = predicted))
 
-    n <- sum(cm)
-    diag <- diag(cm)
     rowsums <- apply(cm, 1, sum)
     colsums <- apply(cm, 2, sum)
 
