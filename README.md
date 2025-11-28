@@ -1,64 +1,52 @@
 # Subtyping Canine Mammary Tumors with Selected Genes using Machine Learning Models
 
-## Description
+This pipeline selects subtype-informative genes from TCGA breast cancer RNA-seq data and evaluates how well those features classify canine mammary tumors.
 
-The goal of this project is to utilize machine learning methods to identify the most relevant genes for subtyping human breast cancer. These relevant genes can also be employed to subtype canine mammary tumors, enabling a comparative oncology analysis.
-
-The project implements a pipeline consisting of five steps to analyze RNA-seq expression data from the TCGA dataset. The pipeline aims to select the most relevant genes and evaluate their effectiveness in subtyping mammary tumors in dogs.
-
-The subtyping results were used in the research conducted by Watson, J. et al.,
-Titled 'Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs,' published in Breast Cancer Res 25, 114 (2023)
+The work supports the findings in Watson, J. et al., *Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs*, **Breast Cancer Research** (2023).
 
 ## Pipeline Overview
-1. **Batch Effect Correction** – Adjust expression data with ComBat.  
-2. **Differential Expression** – Identify subtype-specific differentially expressed genes (DEGs).  
-3. **Feature Selection** – Apply Boruta with random forests (50 iterations) to select robust features.  
-4. **Model Training** – Train and evaluate a random forest classifier on TCGA data.  
-5. **Validation** – Test selected features and models on canine mammary tumor data.  
+1. **Batch Effect Correction** – Adjust human and canine expression data with ComBat.  
+2. **Differential Expression** – Identify subtype-specific DEGs in TCGA.  
+3. **Feature Selection** – Apply Boruta (random forest) to select robust genes.  
+4. **Model Training** – Train and evaluate a random forest classifier on TCGA.  
+5. **Validation** – Test features and the model on canine mammary tumor data.  
 
+## Prerequisites
+- R (tested with 4.3)  
+- Suggested packages: `data.table`, `sva`, `pvca`, `ggplot2`, `limma`, `edgeR`, `EnhancedVolcano`, `Boruta`, `randomForest`, `caret`, `ComplexHeatmap`, plus Bioconductor manager `BiocManager`.  
+- Scripts auto-install missing packages via `load_dependencies()` (see `R/utils.R`), but pre-installing can save time.
+- Pipeline parameters live in `config/config.yml` (e.g., `boruta_runs`, `model_rounds`, CV folds, tune length, and file names).
 
-## Usage
+## Data
+Expected file names and locations are configurable in `config/config.yml`:
+- `data/raw/TCGA_BRCA_log2TPM+1.csv` – human log2(TPM+1) expression  
+- `data/raw/cmt_all.csv` – canine expression  
+- `data/raw/All_dog_TCGA_subtype_meta.txt` – metadata with `PATIENT_ID`, `SOURCE`, and `SUBTYPE`  
 
-To run the script and execute the pipeline, follow these steps:
+Outputs are written under `data/processed/` and `results/` (figures in `results/figures/`).
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
+## Quickstart
+1. Place input files in `data/raw/` (or adjust paths in `config/config.yml`).  
+2. From the repo root, run the steps in order:
+   ```bash
+   Rscript scripts/01_combat.R
+   Rscript scripts/02_deg.R
+   Rscript scripts/03_feature_selection.R
+   Rscript scripts/04_model_training.R
+   Rscript scripts/05_validation.R
+   ```
+   Each script will create its required output directories automatically.
+   Or run everything at once: `Rscript main.R`.
 
-2. Run the following scripts in order:
-
-   - `1.combat_2data.R`
-   - `2.tcga_DEG_subtype.R`
-   - `3.feature_selection_tcga_subtype.R`
-   - `4.model_tcga_subtype.R`
-   - `5.validate_model_subtype.R`
-
-   Note: Ensure that the necessary variables are loaded and the required R packages are installed before running each script.
-
-## Results
-
-After executing the pipeline, the script will produce the following results:
-
-- Batch-corrected expression data
-- Differential gene expression results
-- Selected feature genes
-- Random forest model
-- Model performance evaluation
-
-The overall directory structure should resemble the following:
-
-```
-base_folder/
- ├─ Step1_combat/
- ├─ Step2_DEG/
- ├─ Step3_feature_selection/
- ├─ Step4_model_create/
- └─ Step5_model_validation/
-```
+## Repository Layout
+- `scripts/` – step-wise pipeline scripts (`01_combat.R` … `05_validation.R`).  
+- `R/` – helpers (`utils.R`, plotting functions).  
+- `config/config.yml` – file paths and model parameters (e.g., Boruta runs, CV folds).  
+- `data/` – raw inputs in `data/raw/`, processed data in `data/processed/`.  
+- `results/` – intermediate results, figures, and trained models.
 
 ## Publication
-
-Watson J, Wang T, Ho KL, et al. Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs.
-Breast Cancer Research. 2023;25:114. https://doi.org/10.1186/s13058-023-01705-5
+Watson J, Wang T, Ho KL, et al. Human basal-like breast cancer is represented by one of the two mammary tumor subtypes in dogs. *Breast Cancer Research*. 2023;25:114. https://doi.org/10.1186/s13058-023-01705-5
 
 ## Acknowledgements
-
-We extend our heartfelt gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contributions in designing the prototype. His expertise and insights played a pivotal role in shaping the project and ensuring its success.
+We extend our heartfelt gratitude to Tanakamol Mahawan from The University of Liverpool for his invaluable contributions in designing the prototype.
