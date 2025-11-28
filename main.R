@@ -1,6 +1,9 @@
 # Master Workflow Script
 # Description: Runs the entire analysis pipeline.
 
+# Verify expected project structure before running the pipeline
+source("verify_setup.R", local = new.env())
+
 # Load config and utils
 source("R/utils.R")
 config <- load_config()
