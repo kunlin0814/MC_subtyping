@@ -29,13 +29,7 @@ To run the script and execute the pipeline, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
 
-2. Install the required dependencies:
-
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Run the following scripts in order:
+2. Run the following scripts in order:
 
    - `1.combat_2data.R`
    - `2.tcga_DEG_subtype.R`
